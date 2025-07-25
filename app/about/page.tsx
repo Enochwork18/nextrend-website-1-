@@ -4,7 +4,7 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { PageHeader } from "@/components/page-header"
 import Image from "next/image"
-import { motion } from "framer-motion" // Import motion
+import { motion } from "framer-motion"
 
 export default function AboutPage() {
   const teamMembers = [
@@ -13,14 +13,14 @@ export default function AboutPage() {
       role: "Product Lead & AI/Data Systems",
       description:
         "Leads product vision, builds the AI models, manages trend prediction systems, and handles all data aggregation and analysis tasks.",
-      avatar: "/placeholder.svg?height=120&width=120",
+      avatar: "/images/darasimi.jpg", // ✅ Updated
     },
     {
       name: "Jerry",
       role: "App Developer",
       description:
         "Responsible for building and maintaining the mobile and web applications, integrating AI features into the frontend, and ensuring smooth user experience across devices.",
-      avatar: "/placeholder.svg?height=120&width=120",
+      avatar: "/images/jerry.jpg", // ✅ Updated
     },
   ]
 
@@ -66,6 +66,7 @@ export default function AboutPage() {
           variants={sectionVariants}
         >
           <div className="container px-4 md:px-6 max-w-4xl mx-auto space-y-12">
+            {/* Objective */}
             <motion.div variants={itemVariants}>
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter text-gray-900 dark:text-white">Our Objective</h2>
@@ -76,6 +77,7 @@ export default function AboutPage() {
               </div>
             </motion.div>
 
+            {/* Target Users */}
             <motion.div variants={itemVariants}>
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter text-gray-900 dark:text-white">Target Users</h2>
@@ -88,6 +90,7 @@ export default function AboutPage() {
               </div>
             </motion.div>
 
+            {/* Enhancements */}
             <motion.div variants={itemVariants}>
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter text-gray-900 dark:text-white">
@@ -101,6 +104,7 @@ export default function AboutPage() {
               </div>
             </motion.div>
 
+            {/* Status */}
             <motion.div variants={itemVariants}>
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter text-gray-900 dark:text-white">Project Status</h2>
@@ -110,6 +114,7 @@ export default function AboutPage() {
               </div>
             </motion.div>
 
+            {/* Next Steps */}
             <motion.div variants={itemVariants}>
               <div className="space-y-4">
                 <h2 className="text-3xl font-bold tracking-tighter text-gray-900 dark:text-white">Next Steps</h2>
@@ -121,6 +126,7 @@ export default function AboutPage() {
               </div>
             </motion.div>
 
+            {/* Team */}
             <div className="space-y-8">
               <h2 className="text-3xl font-bold tracking-tighter text-center text-gray-900 dark:text-white">
                 Our Team
@@ -136,7 +142,7 @@ export default function AboutPage() {
                   >
                     <div className="flex flex-col items-center text-center bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-md transition-all duration-300 ease-in-out hover:scale-[1.02] hover:shadow-xl">
                       <Image
-                        src={member.avatar || "images/WhatsApp Image 2025-07-24 at 21.38.26_b5dc9bcc.jpg"}
+                        src={member.avatar}
                         alt={member.name}
                         width={120}
                         height={120}
