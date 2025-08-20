@@ -27,7 +27,7 @@ export default function LoginPage() {
     // if (data.success) { ... } else { setError(data.message); }
     const result = login(email, password)
     if (result.success) {
-      router.push("/dashboard") // Redirect to dashboard on successful login
+      router.push("/home-dashboard") // Redirect to new home dashboard on successful login
     } else {
       setError(result.message)
     }

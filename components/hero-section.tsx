@@ -74,7 +74,7 @@ export function HeroSection() {
             className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             variants={itemVariants}
           >
-            <Link href="/auth/login" prefetch={false}>
+            <Link href="/auth/signup" prefetch={false}>
               <Button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-8 py-3 rounded-full">
                 Get Started
               </Button>

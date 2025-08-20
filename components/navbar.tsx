@@ -20,6 +20,15 @@ export function Navbar() {
     { href: "/contact", label: "Contact" },
   ]
 
+  // Navigation links for logged-in users
+  const dashboardNavLinks = [
+    { href: "/home-dashboard", label: "Home" },
+    { href: "/discover", label: "Discover" },
+    { href: "/optimize", label: "Optimize" },
+    { href: "/create", label: "Create" },
+    { href: "/ai-coach", label: "AI Coach" },
+    { href: "/upgrade", label: "Upgrade" },
+  ]
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/90 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/90">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
@@ -31,7 +40,7 @@ export function Navbar() {
           <span className="text-blue-600">NexTrend</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
+          {(isLoggedIn ? dashboardNavLinks : navLinks).map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -41,16 +50,7 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          {isLoggedIn ? (
-            <Link href="/dashboard" prefetch={false}>
-              <Button
-                variant="ghost"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                Dashboard
-              </Button>
-            </Link>
-          ) : (
+          {!isLoggedIn && (
             <Link href="/auth/signup" prefetch={false}>
               <Button
                 variant="ghost"
@@ -60,7 +60,7 @@ export function Navbar() {
               </Button>
             </Link>
           )}
-          {isLoggedIn ? null : (
+          {!isLoggedIn && (
             <Link href="/auth/login" prefetch={false}>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">Login</Button>
             </Link>
@@ -79,7 +79,7 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" className="bg-white dark:bg-gray-900">
             <div className="flex flex-col gap-4 py-6">
-              {navLinks.map((link) => (
+              {(isLoggedIn ? dashboardNavLinks : navLinks).map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -89,16 +89,7 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              {isLoggedIn ? (
-                <Link href="/dashboard" prefetch={false}>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-lg font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-                  >
-                    Dashboard
-                  </Button>
-                </Link>
-              ) : (
+              {!isLoggedIn && (
                 <Link href="/auth/signup" prefetch={false}>
                   <Button
                     variant="ghost"
@@ -108,7 +99,7 @@ export function Navbar() {
                   </Button>
                 </Link>
               )}
-              {isLoggedIn ? null : (
+              {!isLoggedIn && (
                 <Link href="/auth/login" prefetch={false}>
                   <Button className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white text-lg font-medium">
                     Login

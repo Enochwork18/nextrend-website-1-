@@ -45,7 +45,9 @@ export default function SignupPage() {
       setEmail("")
       setPassword("")
       setConfirmPassword("")
-      router.push("/auth/login") // Redirect to login after successful signup
+      setTimeout(() => {
+        router.push("/auth/login") // Redirect to login after successful signup
+      }, 1500)
     } else {
       setError(result.message)
     }

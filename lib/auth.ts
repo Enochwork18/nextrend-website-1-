@@ -50,6 +50,7 @@ export const login = (email: string, password: string): { success: boolean; mess
   if (storedPassword === password) {
     // In a real app, a session token would be stored (e.g., in http-only cookies).
     localStorage.setItem("currentUserEmail", email) // Store current user's email for session simulation
+    localStorage.setItem("isLoggedIn", "true") // Add login persistence flag
     return { success: true, message: "Login successful!", user }
   }
   return { success: false, message: "Invalid credentials." }
@@ -61,6 +62,7 @@ export const login = (email: string, password: string): { success: boolean; mess
  */
 export const logout = (): void => {
   localStorage.removeItem("currentUserEmail")
+  localStorage.removeItem("isLoggedIn")
 }
 
 /**
@@ -68,6 +70,9 @@ export const logout = (): void => {
  * In a real app, this might involve validating a session token with the backend.
  */
 export const getCurrentUser = (): User | null => {
+  const isLoggedIn = localStorage.getItem("isLoggedIn")
+  if (!isLoggedIn) return null
+  
   const email = localStorage.getItem("currentUserEmail")
   if (email) {
     const user = users.find((u) => u.email === email)
