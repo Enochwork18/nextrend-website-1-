@@ -26,8 +26,8 @@ export function ContentExamples() {
     },
     {
       image: "/images/content-example-3.jpeg",
-      title: "C 580 with EQ Techno",
-      description: "A deep dive into the technology behind the C 580 and its impact on modern vehicles.",
+      title: "EQ Techno",
+      description: "A deep dive into the technology behind EQ Techno and its impact on modern vehicles.",
       socials: [
         { Icon: Twitter, link: "https://x.com/nextrenda12025" },
         { Icon: Youtube, link: "https://www.tiktok.com/@nextrendai" },

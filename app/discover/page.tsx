@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Slider } from "@/components/ui/slider"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
 import { Search, Filter, Play, Eye, ThumbsUp, Clock, TrendingUp } from "lucide-react"
@@ -15,12 +14,6 @@ import { useState } from "react"
 import Image from "next/image"
 
 export default function DiscoverPage() {
-  const [outlierScore, setOutlierScore] = useState([0])
-  const [views, setViews] = useState([0])
-  const [subscribers, setSubscribers] = useState([0])
-  const [viewsPerHour, setViewsPerHour] = useState([0])
-  const [videoLength, setVideoLength] = useState([0])
-
   // TODO: Connect to backend API for trending videos data
   const trendingVideos = [
     {
@@ -98,68 +91,42 @@ export default function DiscoverPage() {
               </div>
 
               {/* Filter Controls */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium">Outlier Score</label>
-                    <Button variant="ghost" size="sm" className="text-xs">Reset</Button>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Range (0-100x)</span>
-                    </div>
-                    <Slider
-                      value={outlierScore}
-                      onValueChange={setOutlierScore}
-                      max={100}
-                      step={1}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-xs">
-                      <span>0</span>
-                      <span>100+</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium">Views</label>
-                    <Button variant="ghost" size="sm" className="text-xs">Reset</Button>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs text-gray-500">
-                      <span>Range (0-10M+)</span>
-                    </div>
-                    <Slider
-                      value={views}
-                      onValueChange={setViews}
-                      max={10000000}
-                      step={1000}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-xs">
-                      <span>0</span>
-                      <span>10M+</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium">Publishing Date</label>
-                    <Button variant="ghost" size="sm" className="text-xs">Reset</Button>
-                  </div>
+              <div className="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <Select>
                     <SelectTrigger>
-                      <SelectValue placeholder="All Time" />
+                      <SelectValue placeholder="Category" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">All Time</SelectItem>
-                      <SelectItem value="today">Today</SelectItem>
-                      <SelectItem value="week">This Week</SelectItem>
-                      <SelectItem value="month">This Month</SelectItem>
-                      <SelectItem value="year">This Year</SelectItem>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      <SelectItem value="technology">Technology</SelectItem>
+                      <SelectItem value="lifestyle">Lifestyle</SelectItem>
+                      <SelectItem value="business">Business</SelectItem>
+                      <SelectItem value="entertainment">Entertainment</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Duration" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Durations</SelectItem>
+                      <SelectItem value="short">Under 5 min</SelectItem>
+                      <SelectItem value="medium">5-15 min</SelectItem>
+                      <SelectItem value="long">Over 15 min</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sort By" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="trending">Most Trending</SelectItem>
+                      <SelectItem value="views">Most Views</SelectItem>
+                      <SelectItem value="recent">Most Recent</SelectItem>
+                      <SelectItem value="engagement">Best Engagement</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -171,10 +138,10 @@ export default function DiscoverPage() {
                   <Button variant="outline" size="sm">Shorts</Button>
                   <Button variant="outline" size="sm">Thumbnails</Button>
                 </div>
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">Reset All</Button>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">Apply</Button>
-                </div>
+              </div>
+
+              <div className="flex justify-center">
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">Apply Filters</Button>
               </div>
             </div>
 

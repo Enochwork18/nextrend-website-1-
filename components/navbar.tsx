@@ -1,34 +1,42 @@
 "use client"
 import Link from "next/link"
-import { MenuIcon } from "lucide-react"
+import { MenuIcon, Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { useEffect, useState } from "react"
 import { getCurrentUser } from "@/lib/auth"
+import { useTheme } from "next-themes"
 
 export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setIsLoggedIn(!!getCurrentUser())
+    setMounted(true)
   }, [])
 
   const navLinks = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
-    { href: "/docs", label: "Docs" },
+    { href: "/upgrade", label: "Pricing" },
     { href: "/contact", label: "Contact" },
+    { href: "/docs", label: "Support" },
   ]
 
   // Navigation links for logged-in users
   const dashboardNavLinks = [
     { href: "/home-dashboard", label: "Home" },
     { href: "/discover", label: "Discover" },
-    { href: "/optimize", label: "Optimize" },
-    { href: "/create", label: "Create" },
-    { href: "/ai-coach", label: "AI Coach" },
+    { href: "/keywords", label: "Keywords" },
+    { href: "/ai-trend", label: "AI Trend" },
     { href: "/upgrade", label: "Upgrade" },
   ]
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/90 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/90">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
@@ -39,7 +47,8 @@ export function Navbar() {
         >
           <span className="text-blue-600">NexTrend</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-6">
+          <nav className="flex items-center gap-6">
           {(isLoggedIn ? dashboardNavLinks : navLinks).map((link) => (
             <Link
               key={link.href}
@@ -50,22 +59,33 @@ export function Navbar() {
               {link.label}
             </Link>
           ))}
-          {!isLoggedIn && (
-            <Link href="/auth/signup" prefetch={false}>
-              <Button
-                variant="ghost"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-              >
-                Sign Up
-              </Button>
-            </Link>
+          </nav>
+          {mounted && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="text-gray-700 dark:text-gray-300"
+            >
+              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </Button>
           )}
           {!isLoggedIn && (
-            <Link href="/auth/login" prefetch={false}>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">Login</Button>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="/auth/signup" prefetch={false}>
+                <Button
+                  variant="ghost"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                >
+                  Sign Up
+                </Button>
+              </Link>
+              <Link href="/auth/login" prefetch={false}>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">Login</Button>
+              </Link>
+            </div>
           )}
-        </nav>
+        </div>
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -79,6 +99,25 @@ export function Navbar() {
           </SheetTrigger>
           <SheetContent side="right" className="bg-white dark:bg-gray-900">
             <div className="flex flex-col gap-4 py-6">
+              {mounted && (
+                <Button
+                  variant="ghost"
+                  onClick={toggleTheme}
+                  className="w-full justify-start text-lg font-medium text-gray-900 dark:text-white"
+                >
+                  {theme === 'dark' ? (
+                    <>
+                      <Sun className="h-5 w-5 mr-2" />
+                      Light Mode
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="h-5 w-5 mr-2" />
+                      Dark Mode
+                    </>
+                  )}
+                </Button>
+              )}
               {(isLoggedIn ? dashboardNavLinks : navLinks).map((link) => (
                 <Link
                   key={link.href}

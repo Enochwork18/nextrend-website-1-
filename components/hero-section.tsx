@@ -1,28 +1,46 @@
 "use client"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion" // Import motion
 
 export function HeroSection() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const router = useRouter()
+  const [currentText, setCurrentText] = useState("")
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const texts = [
+    "Discover trending niches",
+    "Create viral content", 
+    "Grow your audience"
+  ]
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const current = texts[currentIndex]
+      
+      if (!isDeleting) {
+        if (currentText.length < current.length) {
+          setCurrentText(current.substring(0, currentText.length + 1))
+        } else {
+          setTimeout(() => setIsDeleting(true), 2000)
+        }
+      } else {
+        if (currentText.length > 0) {
+          setCurrentText(current.substring(0, currentText.length - 1))
+        } else {
+          setIsDeleting(false)
+          setCurrentIndex((prev) => (prev + 1) % texts.length)
+        }
+      }
+    }, isDeleting ? 50 : 100)
+
+    return () => clearTimeout(timeout)
+  }, [currentText, currentIndex, isDeleting, texts])
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
-  }
-
-  const handleGenerateSearch = () => {
-    if (searchQuery.trim()) {
-      // Frontend Simulation: Redirect to a search results page.
-      // For backend integration: Replace this with an API call to your search service.
-      // Example: const response = await fetch(`/api/search?q=${encodeURIComponent(searchQuery)}`);
-      // Then process the response and display actual results.
-      router.push(`/search?q=${encodeURIComponent(searchQuery)}`)
-    }
   }
 
   const containerVariants = {
@@ -63,7 +81,8 @@ export function HeroSection() {
             className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
             variants={itemVariants}
           >
-            Discover Trending Niches. Create Viral Content. Grow Your Audience.
+            <span className="block mb-2">{currentText}</span>
+            <span className="animate-pulse">|</span>
           </motion.h1>
           <motion.p className="mt-4 text-lg md:text-xl text-gray-200" variants={itemVariants}>
             NexTrend is an AI-powered platform that identifies trending niches and topics across social media platforms
@@ -89,39 +108,19 @@ export function HeroSection() {
           </motion.div>
         </div>
         <motion.div
-          className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20 hidden lg:block"
+          className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20 hidden lg:flex flex-col items-center justify-center"
           variants={itemVariants}
         >
-          <h3 className="text-xl font-semibold mb-4">Try generating content ideas</h3>
-          <div className="space-y-4">
-            <div className="bg-white/20 rounded-lg p-3 text-sm text-gray-200">
-              <p>Prompt: "Give me trending ideas for short-form video content about sustainable living."</p>
+          <div className="w-full aspect-video bg-black/30 rounded-lg flex items-center justify-center mb-4">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
+                <div className="w-0 h-0 border-l-[12px] border-l-white border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent ml-1"></div>
+              </div>
+              <p className="text-sm text-gray-300">Video Preview</p>
             </div>
-            <div className="bg-white/20 rounded-lg p-3 text-sm text-gray-200">
-              <p>
-                Response: "1. DIY upcycled furniture. 2. Zero-waste cooking tips. 3. Composting for beginners. 4.
-                Sustainable fashion hauls."
-              </p>
-            </div>
-            <Input
-              placeholder="Type your prompt here..."
-              className="w-full bg-white/20 border-white/30 text-white placeholder:text-gray-300 focus:ring-yellow-400"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault() // Prevent form submission
-                  handleGenerateSearch()
-                }
-              }}
-            />
-            <Button
-              className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold"
-              onClick={handleGenerateSearch}
-            >
-              Generate
-            </Button>
           </div>
+          <h3 className="text-lg font-semibold text-center">Watch NexTrend in Action</h3>
+          <p className="text-sm text-gray-300 text-center mt-2">See how our AI identifies trending content</p>
         </motion.div>
       </motion.div>
     </section>
