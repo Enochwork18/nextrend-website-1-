@@ -111,15 +111,26 @@ export function HeroSection() {
           className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20 hidden lg:flex flex-col items-center justify-center"
           variants={itemVariants}
         >
-          <div className="w-full aspect-video bg-black/30 rounded-lg flex items-center justify-center mb-4">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
-                <div className="w-0 h-0 border-l-[12px] border-l-white border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent ml-1"></div>
+          <div className="w-full aspect-video bg-black/30 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
+            <video 
+              className="w-full h-full object-cover rounded-lg"
+              autoPlay 
+              muted 
+              loop
+              poster="/images/content-example-1.jpeg"
+            >
+              <source src="/placeholder-video.mp4" type="video/mp4" />
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
+                    <div className="w-0 h-0 border-l-[12px] border-l-white border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent ml-1"></div>
+                  </div>
+                  <p className="text-sm text-gray-300">Video Preview</p>
+                </div>
               </div>
-              <p className="text-sm text-gray-300">Video Preview</p>
-            </div>
+            </video>
           </div>
-          <h3 className="text-lg font-semibold text-center">Watch NexTrend in Action</h3>
+          <h3 className="text-lg font-semibold text-center">EQ Techno</h3>
           <p className="text-sm text-gray-300 text-center mt-2">See how our AI identifies trending content</p>
         </motion.div>
       </motion.div>

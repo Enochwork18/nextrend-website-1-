@@ -10,6 +10,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signup } from "@/lib/auth"
 import { motion } from "framer-motion" // Import motion
+import { X } from "lucide-react"
 
 export default function SignupPage() {
   const [firstName, setFirstName] = useState("")
@@ -63,6 +64,15 @@ export default function SignupPage() {
       <motion.div className="w-full max-w-md mx-auto" initial="hidden" animate="visible" variants={cardVariants}>
         <Card className="bg-white dark:bg-gray-800">
           <CardHeader className="space-y-1 text-center">
+            <div className="flex justify-between items-center">
+              <div className="flex-1" />
+              <button 
+                onClick={() => window.history.back()}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+              >
+                <X className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+              </button>
+            </div>
             <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Create an Account</CardTitle>
             <CardDescription className="text-gray-600 dark:text-gray-400">
               Enter your details below to create your NexTrend account.

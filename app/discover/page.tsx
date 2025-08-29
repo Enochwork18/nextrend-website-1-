@@ -92,7 +92,7 @@ export default function DiscoverPage() {
 
               {/* Filter Controls */}
               <div className="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   <Select>
                     <SelectTrigger>
                       <SelectValue placeholder="Category" />
@@ -120,13 +120,38 @@ export default function DiscoverPage() {
                   
                   <Select>
                     <SelectTrigger>
-                      <SelectValue placeholder="Sort By" />
+                      <SelectValue placeholder="Outlier Score" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="trending">Most Trending</SelectItem>
-                      <SelectItem value="views">Most Views</SelectItem>
-                      <SelectItem value="recent">Most Recent</SelectItem>
-                      <SelectItem value="engagement">Best Engagement</SelectItem>
+                      <SelectItem value="all">All Scores</SelectItem>
+                      <SelectItem value="high">100x+</SelectItem>
+                      <SelectItem value="medium">10x-100x</SelectItem>
+                      <SelectItem value="low">Under 10x</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Views" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Views</SelectItem>
+                      <SelectItem value="viral">1M+ Views</SelectItem>
+                      <SelectItem value="popular">100K-1M Views</SelectItem>
+                      <SelectItem value="growing">10K-100K Views</SelectItem>
+                      <SelectItem value="emerging">Under 10K Views</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Published" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Time</SelectItem>
+                      <SelectItem value="today">Today</SelectItem>
+                      <SelectItem value="week">This Week</SelectItem>
+                      <SelectItem value="month">This Month</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

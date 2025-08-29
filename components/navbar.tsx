@@ -1,154 +1,108 @@
 "use client"
 import Link from "next/link"
-import { MenuIcon, Sun, Moon } from "lucide-react"
+import type React from "react"
+
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { useEffect, useState } from "react"
-import { getCurrentUser } from "@/lib/auth"
-import { useTheme } from "next-themes"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { login } from "@/lib/auth"
+import { motion } from "framer-motion" // Import motion
+import { X } from "lucide-react"
 
-export function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+export default function LoginPage() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const router = useRouter()
 
-  useEffect(() => {
-    setIsLoggedIn(!!getCurrentUser())
-    setMounted(true)
-  }, [])
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError("") // Clear previous errors
+    // Frontend Simulation: This calls a local function.
+    // For backend integration: Replace this with an API call to your authentication service.
+    // Example: const response = await fetch('/api/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+    // const data = await response.json();
+    // if (data.success) { ... } else { setError(data.message); }
+    const result = login(email, password)
+    if (result.success) {
+      router.push("/home-dashboard") // Redirect to new home dashboard on successful login
+    } else {
+      setError(result.message)
+    }
+  }
 
-  const navLinks = [
-    { href: "/", label: "Home" },
-    { href: "/upgrade", label: "Pricing" },
-    { href: "/contact", label: "Contact" },
-    { href: "/docs", label: "Support" },
-  ]
+  const handleCancel = () => {
+    router.push("/")
+  }
 
-  // Navigation links for logged-in users
-  const dashboardNavLinks = [
-    { href: "/home-dashboard", label: "Home" },
-    { href: "/discover", label: "Discover" },
-    { href: "/keywords", label: "Keywords" },
-    { href: "/ai-trend", label: "AI Trend" },
-    { href: "/upgrade", label: "Upgrade" },
-  ]
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark')
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut" } },
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/90 backdrop-blur-sm dark:border-gray-800 dark:bg-gray-950/90">
-      <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-        <Link
-          href="/"
-          className="flex items-center gap-2 font-bold text-lg text-gray-900 dark:text-white"
-          prefetch={false}
-        >
-          <span className="text-blue-600">NexTrend</span>
-        </Link>
-        <div className="hidden md:flex items-center gap-6">
-          <nav className="flex items-center gap-6">
-          {(isLoggedIn ? dashboardNavLinks : navLinks).map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-gray-700 hover:underline underline-offset-4 dark:text-gray-300 dark:hover:text-white"
-              prefetch={false}
-            >
-              {link.label}
-            </Link>
-          ))}
-          </nav>
-          {mounted && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="text-gray-700 dark:text-gray-300"
-            >
-              {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-            </Button>
-          )}
-          {!isLoggedIn && (
-            <div className="flex items-center gap-2">
-              <Link href="/auth/signup" prefetch={false}>
-                <Button
-                  variant="ghost"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  Sign Up
-                </Button>
-              </Link>
-              <Link href="/auth/login" prefetch={false}>
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white">Login</Button>
+    <div className="flex flex-col min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-950">
+      <motion.div className="w-full max-w-md mx-auto" initial="hidden" animate="visible" variants={cardVariants}>
+        <Card className="bg-white dark:bg-gray-800">
+          <CardHeader className="space-y-1 text-center">
+            <div className="flex justify-end">
+              <Button
+                variant="ghost"
+            <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Login to NexTrend</CardTitle>
+            <CardDescription className="text-gray-600 dark:text-gray-400">
+              Enter your email below to login to your account.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-gray-900 dark:text-white">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="m@example.com"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border-gray-200 dark:border-gray-600"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-900 dark:text-white">
+                  Password
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white border-gray-200 dark:border-gray-600"
+                />
+              </div>
+              {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                Login
+              </Button>
+            </form>
+            <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/auth/signup"
+                className="font-medium text-blue-600 hover:underline dark:text-blue-400"
+                prefetch={false}
+              >
+                Sign up
               </Link>
             </div>
-          )}
-        </div>
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="md:hidden bg-transparent border-gray-300 dark:border-gray-700"
-            >
-              <MenuIcon className="h-6 w-6 text-gray-900 dark:text-white" />
-              <span className="sr-only">Toggle navigation menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="bg-white dark:bg-gray-900">
-            <div className="flex flex-col gap-4 py-6">
-              {mounted && (
-                <Button
-                  variant="ghost"
-                  onClick={toggleTheme}
-                  className="w-full justify-start text-lg font-medium text-gray-900 dark:text-white"
-                >
-                  {theme === 'dark' ? (
-                    <>
-                      <Sun className="h-5 w-5 mr-2" />
-                      Light Mode
-                    </>
-                  ) : (
-                    <>
-                      <Moon className="h-5 w-5 mr-2" />
-                      Dark Mode
-                    </>
-                  )}
-                </Button>
-              )}
-              {(isLoggedIn ? dashboardNavLinks : navLinks).map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-lg font-medium text-gray-900 dark:text-white"
-                  prefetch={false}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              {!isLoggedIn && (
-                <Link href="/auth/signup" prefetch={false}>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start text-lg font-medium text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-                  >
-                    Sign Up
-                  </Button>
-                </Link>
-              )}
-              {!isLoggedIn && (
-                <Link href="/auth/login" prefetch={false}>
-                  <Button className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white text-lg font-medium">
-                    Login
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
-    </header>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </div>
   )
 }
