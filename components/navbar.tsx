@@ -12,7 +12,7 @@ import { login } from "@/lib/auth"
 import { motion } from "framer-motion" // Import motion
 import { X } from "lucide-react"
 
-export function Navbar() {
+export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
