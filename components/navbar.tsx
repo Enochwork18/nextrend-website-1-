@@ -51,6 +51,12 @@ export default function LoginPage() {
             <div className="flex justify-end">
               <Button
                 variant="ghost"
+                size="sm"
+                onClick={handleCancel}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
             <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">Login to NexTrend</CardTitle>
             <CardDescription className="text-gray-600 dark:text-gray-400">
               Enter your email below to login to your account.
@@ -104,6 +110,5 @@ export default function LoginPage() {
         </Card>
       </motion.div>
     </div>
-  )
   )
 }
