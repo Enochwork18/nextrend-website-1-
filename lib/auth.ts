@@ -1,6 +1,9 @@
 // This file provides frontend-only authentication simulation using localStorage.
-// For a real application, these functions would interact with a backend API
-// (e.g., using fetch to send requests to /api/login, /api/signup, etc.).
+// TODO: Replace with real backend API integration
+// TODO: Implement /api/auth/login, /api/auth/signup, /api/auth/logout endpoints
+// TODO: Add JWT token management and secure session handling
+// TODO: Implement password hashing with bcrypt or similar
+// TODO: Add email verification and password reset functionality
 
 interface User {
   id: string
