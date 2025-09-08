@@ -2,42 +2,16 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { useState, useEffect } from "react"
-import { motion, type Variants } from "framer-motion" // Import motion
+import { motion, type Variants } from "framer-motion"
+import { Typewriter } from "@/components/typewriter"
+import { MockupVideo } from "@/components/mockup-video"
 
 export function HeroSection() {
-  const [currentText, setCurrentText] = useState("")
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  const texts = [
+  const heroLines = [
     "Discover trending niches",
     "Create viral content", 
     "Grow your audience"
   ]
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      const current = texts[currentIndex]
-      
-      if (!isDeleting) {
-        if (currentText.length < current.length) {
-          setCurrentText(current.substring(0, currentText.length + 1))
-        } else {
-          setTimeout(() => setIsDeleting(true), 2000)
-        }
-      } else {
-        if (currentText.length > 0) {
-          setCurrentText(current.substring(0, currentText.length - 1))
-        } else {
-          setIsDeleting(false)
-          setCurrentIndex((prev) => (prev + 1) % texts.length)
-        }
-      }
-    }, isDeleting ? 50 : 100)
-
-    return () => clearTimeout(timeout)
-  }, [currentText, currentIndex, isDeleting, texts])
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
@@ -81,8 +55,13 @@ export function HeroSection() {
             className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-tight"
             variants={itemVariants}
           >
-            <span className="block mb-2">{currentText}</span>
-            <span className="animate-pulse">|</span>
+            <Typewriter 
+              lines={heroLines}
+              className="block mb-2"
+              speed={100}
+              pauseBetweenLines={2000}
+              loop={true}
+            />
           </motion.h1>
           <motion.p className="mt-4 text-lg md:text-xl text-gray-200" variants={itemVariants}>
             NexTrend is an AI-powered platform that identifies trending niches and topics across social media platforms
@@ -111,25 +90,10 @@ export function HeroSection() {
           className="w-full max-w-md bg-white/10 backdrop-blur-md rounded-xl p-6 shadow-lg border border-white/20 hidden lg:flex flex-col items-center justify-center"
           variants={itemVariants}
         >
-          <div className="w-full aspect-video bg-black/30 rounded-lg flex items-center justify-center mb-4 relative overflow-hidden">
-            <video 
-              className="w-full h-full object-cover rounded-lg"
-              autoPlay 
-              muted 
-              loop
-              poster="/images/content-example-1.jpeg"
-            >
-              <source src="/placeholder-video.mp4" type="video/mp4" />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4 mx-auto">
-                    <div className="w-0 h-0 border-l-[12px] border-l-white border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent ml-1"></div>
-                  </div>
-                  <p className="text-sm text-gray-300">Video Preview</p>
-                </div>
-              </div>
-            </video>
-          </div>
+          <MockupVideo 
+            className="mb-4"
+            posterImage="/images/content-example-1.jpeg"
+          />
           <h3 className="text-lg font-semibold text-center">EQ Techno</h3>
           <p className="text-sm text-gray-300 text-center mt-2">See how our AI identifies trending content</p>
         </motion.div>
