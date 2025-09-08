@@ -9,10 +9,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Configure for Replit environment
-  experimental: {
-    allowedHosts: true,
-  },
+  // Configure for Replit environment - remove experimental allowedHosts as it's not valid
   // Allow connections from all hosts for Replit proxy
   async headers() {
     return [
