@@ -43,13 +43,6 @@ export default function CreatePage() {
       color: "bg-blue-500"
     },
     {
-      id: "thumbnails",
-      title: "Thumbnails",
-      description: "Create eye-catching thumbnails",
-      icon: ImageIcon,
-      color: "bg-green-500"
-    },
-    {
       id: "scripts",
       title: "Scripts",
       description: "AI-powered script writing",

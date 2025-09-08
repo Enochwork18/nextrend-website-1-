@@ -93,13 +93,9 @@ export default function HomeDashboardPage() {
 
   const tools = [
     { name: "Keywords", icon: Search, description: "Find trending keywords" },
-    { name: "Competitors", icon: Eye, description: "Analyze competitor performance" },
     { name: "Subscribers", icon: Users, description: "Track subscriber growth" },
-    { name: "Script Writer", icon: BarChart3, description: "AI-powered script generation" },
-    { name: "Daily Ideas", icon: Lightbulb, description: "Fresh content ideas daily" },
-    { name: "Create", icon: Video, description: "Video creation tools" },
-    { name: "Clipping", icon: Scissors, description: "Auto-clip highlights" },
-    { name: "Optimize", icon: Target, description: "Optimize your content" }
+    { name: "Daily Video", icon: Video, description: "Daily video content ideas" },
+    { name: "Daily Trends", icon: BarChart3, description: "Latest trending topics" }
   ]
 
   const cardVariants = {
@@ -233,7 +229,7 @@ export default function HomeDashboardPage() {
                   </Card>
                 </motion.div>
 
-                {/* Daily Video Ideas */}
+                {/* Trending Videos */}
                 <motion.div
                   initial="hidden"
                   animate="visible"
@@ -243,9 +239,9 @@ export default function HomeDashboardPage() {
                   <Card className="p-6">
                     <div className="flex justify-between items-center mb-4">
                       <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                        Daily Video Ideas
+                        Trending Videos
                       </h3>
-                      <Link href="/create">
+                      <Link href="/find-trending-videos">
                         <Button variant="ghost" size="sm" className="text-blue-600 hover:text-blue-700">
                           View All <ArrowRight className="h-4 w-4 ml-1" />
                         </Button>
