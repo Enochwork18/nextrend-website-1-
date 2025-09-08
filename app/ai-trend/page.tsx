@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { RunPredictionsOverlay } from "@/components/run-predictions-overlay"
 import { motion } from "framer-motion"
 import { 
   Brain, 
@@ -110,8 +111,10 @@ export default function AITrendPage() {
                   initial="hidden"
                   animate="visible"
                   variants={cardVariants}
+                  className="relative"
                 >
-                  <Card className="p-6">
+                  <Card className="p-6 relative">
+                    <RunPredictionsOverlay />
                     <div className="flex items-center gap-3 mb-6">
                       <div className="p-3 bg-blue-100 dark:bg-blue-900 rounded-lg">
                         <Brain className="h-6 w-6 text-blue-600 dark:text-blue-400" />
