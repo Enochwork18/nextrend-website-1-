@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useState, useEffect } from "react"
-import { motion } from "framer-motion" // Import motion
+import { motion, type Variants } from "framer-motion" // Import motion
 
 export function HeroSection() {
   const [currentText, setCurrentText] = useState("")
@@ -43,7 +43,7 @@ export function HeroSection() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
   }
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -54,9 +54,9 @@ export function HeroSection() {
     },
   }
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 50, scale: 0.9 },
-    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: "easeOut" } },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.4, 0.0, 0.2, 1] } },
   }
 
   return (

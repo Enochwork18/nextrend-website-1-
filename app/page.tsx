@@ -10,12 +10,12 @@ import { TestimonialsSection } from "@/components/testimonials-section"
 import { FAQSection } from "@/components/faq-section"
 import { NewsletterCTA } from "@/components/newsletter-cta"
 import { Footer } from "@/components/footer"
-import { motion } from "framer-motion" // Import motion
+import { motion, type Variants } from "framer-motion" // Import motion
 
 export default function HomePage() {
-  const sectionVariants = {
+  const sectionVariants: Variants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.4, 0.0, 0.2, 1] } },
   }
 
   return (
