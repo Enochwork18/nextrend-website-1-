@@ -1,8 +1,9 @@
 "use client"
 import React, { useState } from "react"
 import { motion } from "framer-motion"
-import { Eye, Heart, Share2 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { login } from "@/lib/auth"
+import { User } from "@/types"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -12,13 +13,15 @@ export default function LoginPage() {
     setEmail(e.target.value)
   }
 
-  const handleEmailContinue = () => {
-    console.log("Continuing with email:", email)
-    router.push("/home-dashboard")
-  }
-
-  const handleSocialLogin = (provider) => {
-    console.log("Continuing with", provider)
+  const handleLogin = (provider: string) => {
+    const mockUser: User = {
+      id: "1",
+      email: provider === "email" ? email : `${provider.toLowerCase()}@example.com`,
+      firstName: "John",
+      lastName: "Doe",
+      profilePicture: "https://github.com/shadcn.png",
+    }
+    login(mockUser)
     router.push("/home-dashboard")
   }
 
@@ -76,7 +79,7 @@ export default function LoginPage() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={handleEmailContinue}
+                onClick={() => handleLogin("email")}
                 className="w-full mt-4 bg-white text-black font-medium py-3 px-6 rounded-lg hover:bg-gray-100 transition-colors"
               >
                 Continue with Email
@@ -86,7 +89,7 @@ export default function LoginPage() {
               <div className="space-y-3 mt-6">
                 {/* Gmail */}
                 <button
-                  onClick={() => handleSocialLogin("Gmail")}
+                  onClick={() => handleLogin("Gmail")}
                   className="w-full flex items-center justify-center space-x-3 py-3 px-4 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-lg transition-all backdrop-blur-sm"
                 >
                   <div className="w-5 h-5">
@@ -99,7 +102,7 @@ export default function LoginPage() {
 
                 {/* TikTok */}
                 <button
-                  onClick={() => handleSocialLogin("TikTok")}
+                  onClick={() => handleLogin("TikTok")}
                   className="w-full flex items-center justify-center space-x-3 py-3 px-4 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-lg transition-all backdrop-blur-sm"
                 >
                   <div className="w-5 h-5">
@@ -112,7 +115,7 @@ export default function LoginPage() {
 
                 {/* YouTube */}
                 <button
-                  onClick={() => handleSocialLogin("YouTube")}
+                  onClick={() => handleLogin("YouTube")}
                   className="w-full flex items-center justify-center space-x-3 py-3 px-4 bg-gray-800/50 hover:bg-gray-700/50 border border-gray-600/50 rounded-lg transition-all backdrop-blur-sm"
                 >
                   <div className="w-5 h-5">

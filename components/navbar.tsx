@@ -3,14 +3,26 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Menu, X, Gift, Home, Search, Hash, TrendingUp, Zap, ArrowUpRight } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
+import { getCurrentUser, logout, User } from "@/lib/auth"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    setUser(getCurrentUser())
+  }, [])
 
   const toggleMenu = () => {
     setIsOpen(!isOpen)
+  }
+
+  const handleLogout = () => {
+    logout()
+    setUser(null)
+    window.location.href = "/"
   }
 
   const pathname = usePathname()
@@ -68,27 +80,40 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Desktop right-side controls: Theme toggle always; auth/donate only on public site */}
+          {/* Desktop right-side controls */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
-            {!isWorkspace && (
+            {user ? (
               <>
-                <Link href="/donate">
-                  <Button variant="outline" size="sm" className="rounded-full border-2">
-                    <Gift className="h-4 w-4 mr-2" /> Donate
-                  </Button>
-                </Link>
-                <Link href="/auth/login">
+                <Link href="/profile">
                   <Button variant="outline" size="sm">
-                    Login
+                    Profile
                   </Button>
                 </Link>
-                <Link href="/auth/signup">
-                  <Button size="sm">
-                    Sign Up
-                  </Button>
-                </Link>
+                <Button size="sm" onClick={handleLogout}>
+                  Logout
+                </Button>
               </>
+            ) : (
+              !isWorkspace && (
+                <>
+                  <Link href="/donate">
+                    <Button variant="outline" size="sm" className="rounded-full border-2">
+                      <Gift className="h-4 w-4 mr-2" /> Donate
+                    </Button>
+                  </Link>
+                  <Link href="/auth/login">
+                    <Button variant="outline" size="sm">
+                      Login
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup">
+                    <Button size="sm">
+                      Get Started
+                    </Button>
+                  </Link>
+                </>
+              )
             )}
           </div>
 
@@ -127,24 +152,37 @@ export function Navbar() {
                 <div className="flex justify-center pb-2">
                   <ThemeToggle />
                 </div>
-                {!isWorkspace && (
+                {user ? (
                   <>
-                    <Link href="/donate">
-                      <Button variant="outline" size="sm" className="w-full rounded-full border-2">
-                        <Gift className="h-4 w-4 mr-2" /> Donate
-                      </Button>
-                    </Link>
-                    <Link href="/auth/login">
+                    <Link href="/profile">
                       <Button variant="outline" size="sm" className="w-full">
-                        Login
+                        Profile
                       </Button>
                     </Link>
-                    <Link href="/auth/signup">
-                      <Button size="sm" className="w-full">
-                        Sign Up
-                      </Button>
-                    </Link>
+                    <Button size="sm" className="w-full" onClick={handleLogout}>
+                      Logout
+                    </Button>
                   </>
+                ) : (
+                  !isWorkspace && (
+                    <>
+                      <Link href="/donate">
+                        <Button variant="outline" size="sm" className="w-full rounded-full border-2">
+                          <Gift className="h-4 w-4 mr-2" /> Donate
+                        </Button>
+                      </Link>
+                      <Link href="/auth/login">
+                        <Button variant="outline" size="sm" className="w-full">
+                          Login
+                        </Button>
+                      </Link>
+                      <Link href="/auth/signup">
+                        <Button size="sm" className="w-full">
+                          Get Started
+                        </Button>
+                      </Link>
+                    </>
+                  )
                 )}
               </div>
             </div>
