@@ -62,10 +62,10 @@ export function Footer() {
         <div className="space-y-4">
           <h3 className="font-semibold text-white">Legal</h3>
           <nav className="space-y-2">
-            <Link href="/privacy-policy" className="text-sm hover:underline underline-offset-4" prefetch={false}>
+            <Link href="/privacy" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               Privacy Policy
             </Link>
-            <Link href="/terms-of-service" className="text-sm hover:underline underline-offset-4" prefetch={false}>
+            <Link href="/terms" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               Terms of Service
             </Link>
           </nav>

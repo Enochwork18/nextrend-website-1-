@@ -17,6 +17,34 @@ import { trendingVideos } from "@/lib/mockData"
 import { useDebounce } from "@/hooks/useDebounce"
 import { useRouter, useSearchParams } from "next/navigation"
 
+// Helper function to convert timeAgo string to a date
+const timeAgoToDate = (timeAgo: string): Date => {
+  const now = new Date();
+  const timeAgoLower = timeAgo.toLowerCase();
+
+  if (timeAgoLower === 'today') {
+    return now;
+  } else if (timeAgoLower.includes('day')) {
+    const days = parseInt(timeAgoLower.split(' ')[0]);
+    now.setDate(now.getDate() - days);
+    return now;
+  } else if (timeAgoLower.includes('week')) {
+    const weeks = parseInt(timeAgoLower.split(' ')[0]);
+    now.setDate(now.getDate() - (weeks * 7));
+    return now;
+  } else if (timeAgoLower.includes('month')) {
+    const months = parseInt(timeAgoLower.split(' ')[0]);
+    now.setMonth(now.getMonth() - months);
+    return now;
+  } else if (timeAgoLower.includes('year')) {
+    const years = parseInt(timeAgoLower.split(' ')[0]);
+    now.setFullYear(now.getFullYear() - years);
+    return now;
+  }
+
+  return now; // Default to now if format is unrecognized
+};
+
 export default function DiscoverContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -53,10 +81,13 @@ export default function DiscoverContent() {
         (duration === 'medium' && video.durationMinutes >= 5 && video.durationMinutes <= 15) ||
         (duration === 'long' && video.durationMinutes > 15);
 
+      const outlierScoreValue = parseInt(video.outlierScore);
       const outlierScoreMatch = outlierScore === 'all' || 
-        (outlierScore === 'high' && parseInt(video.outlierScore) >= 100) ||
-        (outlierScore === 'medium' && parseInt(video.outlierScore) >= 10 && parseInt(video.outlierScore) < 100) ||
-        (outlierScore === 'low' && parseInt(video.outlierScore) < 10);
+        (!isNaN(outlierScoreValue) && (
+          (outlierScore === 'high' && outlierScoreValue >= 100) ||
+          (outlierScore === 'medium' && outlierScoreValue >= 10 && outlierScoreValue < 100) ||
+          (outlierScore === 'low' && outlierScoreValue < 10)
+        ));
 
       const viewsMatch = views === 'all' ||
         (views === 'viral' && parseInt(video.views.replace(/,/g, '')) >= 1000000) ||
@@ -64,13 +95,18 @@ export default function DiscoverContent() {
         (views === 'growing' && parseInt(video.views.replace(/,/g, '')) >= 10000 && parseInt(video.views.replace(/,/g, '')) < 100000) ||
         (views === 'emerging' && parseInt(video.views.replace(/,/g, '')) < 10000);
 
+      const videoDate = timeAgoToDate(video.timeAgo);
+      const now = new Date();
       const publishedMatch = published === 'all' ||
-        (published === 'today' && video.timeAgo === 'Today') ||
-        (published === 'week' && (video.timeAgo.includes('day') || video.timeAgo.includes('hour'))) ||
-        (published === 'month' && (video.timeAgo.includes('week') || video.timeAgo.includes('day') || video.timeAgo.includes('hour')));
+        (published === 'today' && videoDate.toDateString() === now.toDateString()) ||
+        (published === 'week' && now.getTime() - videoDate.getTime() <= 7 * 24 * 60 * 60 * 1000) ||
+        (published === 'month' && now.getTime() - videoDate.getTime() <= 30 * 24 * 60 * 60 * 1000);
 
+      const videoTypeMatch = videoType === 'videos' && video.videoType === 'video' ||
+        videoType === 'shorts' && video.videoType === 'short' ||
+        videoType === 'thumbnails' && video.videoType === 'thumbnail';
 
-      return searchTermMatch && categoryMatch && durationMatch && outlierScoreMatch && viewsMatch && publishedMatch;
+      return searchTermMatch && categoryMatch && durationMatch && outlierScoreMatch && viewsMatch && publishedMatch && videoTypeMatch;
     })
     setFilteredVideos(videos)
   }, [debouncedSearchTerm, category, duration, outlierScore, views, published, videoType])

@@ -11,6 +11,7 @@ export interface TrendingVideo {
   timeAgo: string;
   tags: string[];
   durationMinutes: number;
+  videoType: 'video' | 'short' | 'thumbnail';
 }
 
 export interface Keyword {
