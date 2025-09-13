@@ -1,21 +1,22 @@
 export interface TrendingVideo {
-  id: number;
+  id: string;
   title: string;
-  thumbnail: string;
-  views: string;
-  timeAgo: string;
   channel: string;
   subscribers: string;
+  thumbnail: string;
   outlierScore: string;
+  views: string;
   engagement: string;
-  viewsPerHour: number;
+  viewsPerHour: string;
+  timeAgo: string;
   tags: string[];
+  durationMinutes: number;
 }
 
-export interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  profilePicture?: string;
+export interface Keyword {
+  keyword: string;
+  volume: string;
+  trend: string;
+  difficulty: string;
+  category: string;
 }

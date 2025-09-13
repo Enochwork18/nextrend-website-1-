@@ -34,6 +34,9 @@ export function Footer() {
             <Link href="/about" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               About Us
             </Link>
+            <Link href="/discover" className="text-sm hover:underline underline-offset-4" prefetch={false}>
+              Discover
+            </Link>
             <Link href="/docs" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               Docs
             </Link>
@@ -45,13 +48,13 @@ export function Footer() {
         <div className="space-y-4">
           <h3 className="font-semibold text-white">Resources</h3>
           <nav className="space-y-2">
-            <Link href="#" className="text-sm hover:underline underline-offset-4" prefetch={false}>
+            <Link href="/blog" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               Blog
             </Link>
-            <Link href="#" className="text-sm hover:underline underline-offset-4" prefetch={false}>
+            <Link href="/case-studies" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               Case Studies
             </Link>
-            <Link href="#" className="text-sm hover:underline underline-offset-4" prefetch={false}>
+            <Link href="/support" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               Support
             </Link>
           </nav>
@@ -59,10 +62,10 @@ export function Footer() {
         <div className="space-y-4">
           <h3 className="font-semibold text-white">Legal</h3>
           <nav className="space-y-2">
-            <Link href="#" className="text-sm hover:underline underline-offset-4" prefetch={false}>
+            <Link href="/privacy-policy" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               Privacy Policy
             </Link>
-            <Link href="#" className="text-sm hover:underline underline-offset-4" prefetch={false}>
+            <Link href="/terms-of-service" className="text-sm hover:underline underline-offset-4" prefetch={false}>
               Terms of Service
             </Link>
           </nav>

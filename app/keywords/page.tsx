@@ -10,13 +10,20 @@ import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
 import { Search, Filter, TrendingUp, Users, Eye, BarChart3 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Keyword } from "@/types"
 
 export default function KeywordsPage() {
+  const router = useRouter()
   const [searchQuery, setSearchQuery] = useState("")
+  const [platform, setPlatform] = useState("all")
+  const [category, setCategory] = useState("all")
+  const [difficulty, setDifficulty] = useState("all")
+  const [filteredKeywords, setFilteredKeywords] = useState<Keyword[]>([])
 
   // TODO: Connect to backend API for keywords data
-  const trendingKeywords = [
+  const trendingKeywords: Keyword[] = [
     {
       keyword: "AI automation",
       volume: "125K",
@@ -60,6 +67,17 @@ export default function KeywordsPage() {
       category: "Business"
     }
   ]
+
+  useEffect(() => {
+    const filtered = trendingKeywords.filter(keyword => {
+      const queryMatch = keyword.keyword.toLowerCase().includes(searchQuery.toLowerCase());
+      const categoryMatch = category === 'all' || keyword.category === category;
+      const difficultyMatch = difficulty === 'all' || keyword.difficulty === difficulty;
+      return queryMatch && categoryMatch && difficultyMatch;
+    });
+    setFilteredKeywords(filtered);
+  }, [searchQuery, category, difficulty]);
+
 
   const tools = [
     {
@@ -176,7 +194,7 @@ export default function KeywordsPage() {
                             className="pl-10 bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400"
                           />
                         </div>
-                        <Select>
+                        <Select value={platform} onValueChange={setPlatform}>
                           <SelectTrigger className="bg-white dark:bg-gray-900 border-2 border-gray-300 dark:border-gray-600">
                             <SelectValue placeholder="Select Platform" />
                           </SelectTrigger>
@@ -190,27 +208,29 @@ export default function KeywordsPage() {
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <Select>
+                        <Select value={category} onValueChange={setCategory}>
                           <SelectTrigger>
                             <SelectValue placeholder="Category" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">All Categories</SelectItem>
-                            <SelectItem value="technology">Technology</SelectItem>
-                            <SelectItem value="lifestyle">Lifestyle</SelectItem>
-                            <SelectItem value="business">Business</SelectItem>
-                            <SelectItem value="entertainment">Entertainment</SelectItem>
+                            <SelectItem value="Technology">Technology</SelectItem>
+                            <SelectItem value="Lifestyle">Lifestyle</SelectItem>
+                            <SelectItem value="Business">Business</SelectItem>
+                            <SelectItem value="Finance">Finance</SelectItem>
+                            <SelectItem value="Fitness">Fitness</SelectItem>
+                            <SelectItem value="Food">Food</SelectItem>
                           </SelectContent>
                         </Select>
-                        <Select>
+                        <Select value={difficulty} onValueChange={setDifficulty}>
                           <SelectTrigger>
                             <SelectValue placeholder="Difficulty" />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">All Levels</SelectItem>
-                            <SelectItem value="low">Low Competition</SelectItem>
-                            <SelectItem value="medium">Medium Competition</SelectItem>
-                            <SelectItem value="high">High Competition</SelectItem>
+                            <SelectItem value="Low">Low Competition</SelectItem>
+                            <SelectItem value="Medium">Medium Competition</SelectItem>
+                            <SelectItem value="High">High Competition</SelectItem>
                           </SelectContent>
                         </Select>
                         <Button variant="outline" className="flex items-center gap-2">
@@ -248,7 +268,7 @@ export default function KeywordsPage() {
                     </div>
 
                     <div className="grid gap-4">
-                      {trendingKeywords.map((keyword, index) => (
+                      {filteredKeywords.map((keyword: Keyword, index: number) => (
                         <div key={index} className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md transition-shadow">
                           <div className="flex justify-between items-start mb-3">
                             <div className="flex-1">
@@ -286,7 +306,7 @@ export default function KeywordsPage() {
                             <Button size="sm" variant="outline" className="flex-1">
                               View Details
                             </Button>
-                            <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700">
+                            <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={() => router.push('/create')}>
                               Use Keyword
                             </Button>
                           </div>

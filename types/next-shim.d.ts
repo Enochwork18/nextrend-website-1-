@@ -8,6 +8,7 @@ declare module 'next/navigation' {
   }
   // Server navigation helper
   export function redirect(url: string): never
+  export function useSearchParams(): URLSearchParams;
 }
 
 // Minimal JSX shim to avoid "JSX element implicitly has type 'any'" when next-env.d.ts is ignored.

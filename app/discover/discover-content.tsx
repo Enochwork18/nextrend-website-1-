@@ -27,7 +27,7 @@ export default function DiscoverContent() {
   const [outlierScore, setOutlierScore] = useState(searchParams.get('outlierScore') || 'all')
   const [views, setViews] = useState(searchParams.get('views') || 'all')
   const [published, setPublished] = useState(searchParams.get('published') || 'all')
-  const [videoType, setVideoType] = useState(search_params.get('videoType') || 'videos')
+  const [videoType, setVideoType] = useState(searchParams.get('videoType') || 'videos')
   const [filteredVideos, setFilteredVideos] = useState(trendingVideos)
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
@@ -48,9 +48,29 @@ export default function DiscoverContent() {
     let videos = trendingVideos.filter(video => {
       const searchTermMatch = video.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
       const categoryMatch = category === 'all' || video.tags.includes(category)
-      // Add other filter logic here
+      const durationMatch = duration === 'all' || 
+        (duration === 'short' && video.durationMinutes < 5) ||
+        (duration === 'medium' && video.durationMinutes >= 5 && video.durationMinutes <= 15) ||
+        (duration === 'long' && video.durationMinutes > 15);
 
-      return searchTermMatch && categoryMatch
+      const outlierScoreMatch = outlierScore === 'all' || 
+        (outlierScore === 'high' && parseInt(video.outlierScore) >= 100) ||
+        (outlierScore === 'medium' && parseInt(video.outlierScore) >= 10 && parseInt(video.outlierScore) < 100) ||
+        (outlierScore === 'low' && parseInt(video.outlierScore) < 10);
+
+      const viewsMatch = views === 'all' ||
+        (views === 'viral' && parseInt(video.views.replace(/,/g, '')) >= 1000000) ||
+        (views === 'popular' && parseInt(video.views.replace(/,/g, '')) >= 100000 && parseInt(video.views.replace(/,/g, '')) < 1000000) ||
+        (views === 'growing' && parseInt(video.views.replace(/,/g, '')) >= 10000 && parseInt(video.views.replace(/,/g, '')) < 100000) ||
+        (views === 'emerging' && parseInt(video.views.replace(/,/g, '')) < 10000);
+
+      const publishedMatch = published === 'all' ||
+        (published === 'today' && video.timeAgo === 'Today') ||
+        (published === 'week' && (video.timeAgo.includes('day') || video.timeAgo.includes('hour'))) ||
+        (published === 'month' && (video.timeAgo.includes('week') || video.timeAgo.includes('day') || video.timeAgo.includes('hour')));
+
+
+      return searchTermMatch && categoryMatch && durationMatch && outlierScoreMatch && viewsMatch && publishedMatch;
     })
     setFilteredVideos(videos)
   }, [debouncedSearchTerm, category, duration, outlierScore, views, published, videoType])
@@ -236,10 +256,10 @@ export default function DiscoverContent() {
                         </div>
 
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" className="flex-1">
+                          <Button size="sm" variant="outline" className="flex-1" onClick={() => window.open(`https://www.youtube.com/watch?v=${video.id}`, '_blank')}>
                             Open in YouTube
                           </Button>
-                          <Button size="sm" variant="outline">
+                          <Button size="sm" variant="outline" onClick={() => router.push('/create')}>
                             Remix
                           </Button>
                         </div>

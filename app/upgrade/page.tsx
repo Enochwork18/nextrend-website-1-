@@ -19,8 +19,17 @@ import {
   Target,
   Sparkles
 } from "lucide-react"
+import { useState } from "react"
 
 export default function UpgradePage() {
+
+  const [hasUsedFreeTrial, setHasUsedFreeTrial] = useState(false);
+
+  const handlePayment = (planName: string) => {
+    alert(`This is a placeholder for the payment process for the ${planName} plan., Thank you for your interest!`);
+  }
+
+
   const plans = [
     {
       name: "Free",
@@ -219,6 +228,7 @@ export default function UpgradePage() {
                           : ''
                       }`}
                       size="lg"
+                      onClick={() => handlePayment(plan.name)}
                     >
                       {plan.buttonText}
                     </Button>
@@ -318,9 +328,9 @@ export default function UpgradePage() {
                   Join thousands of creators who are already using NexTrend Pro to grow their channels
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100">
+                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100" disabled={hasUsedFreeTrial} onClick={() => !hasUsedFreeTrial && setHasUsedFreeTrial(true)}>
                     <Sparkles className="h-5 w-5 mr-2" />
-                    Start Free Trial
+                    {hasUsedFreeTrial ? 'Free Trial Used' : 'Start Free Trial'}
                   </Button>
                   <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
                     View Demo
