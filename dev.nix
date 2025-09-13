@@ -1,9 +1,10 @@
 { pkgs ? import <nixpkgs> {} }:
 
 pkgs.mkShell {
-  packages = with pkgs; [
-    nodejs
-    yarn
-    gh
+  buildInputs = [
+    pkgs.nodejs
+    pkgs.yarn
+    pkgs.openssh
+    pkgs.gh
   ];
 }
