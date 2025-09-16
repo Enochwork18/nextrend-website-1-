@@ -32,7 +32,7 @@ export function Navbar() {
   }, [])
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen)
+    setIsOpen(prev => !prev);
   }
 
   const handleLogout = () => {
@@ -223,9 +223,21 @@ export function Navbar() {
             <div className="md:hidden">
               <ThemeToggle />
             </div>
+            {!user && (
+              <Link href="/donate" className="md:hidden">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
+                  <Gift className="h-4 w-4" />
+                  Donate
+                </Button>
+              </Link>
+            )}
             {user && (
               <button
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsProfileOpen(!isProfileOpen);
+                  if (isOpen) setIsOpen(false);
+                }}
                 className={`p-2 rounded-full ${isProfileOpen ? 'bg-gray-100 dark:bg-gray-800' : 'hover:bg-gray-100 dark:hover:bg-gray-800'} focus:outline-none`}
               >
                 <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
@@ -244,7 +256,11 @@ export function Navbar() {
               </button>
             )}
             <button
-              onClick={toggleMenu}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleMenu();
+                if (isProfileOpen) setIsProfileOpen(false);
+              }}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -271,7 +287,7 @@ export function Navbar() {
 
               {/* Profile Menu - Shows when profile icon is clicked */}
               {isProfileOpen && user && (
-                <div className="space-y-1">
+                <div className="space-y-1" onClick={(e) => e.stopPropagation()}>
                   {isWorkspace ? (
                     <>
                       <Link 
@@ -326,6 +342,10 @@ export function Navbar() {
                       onClick={() => {
                         setIsOpen(false);
                         setIsProfileOpen(false);
+                        // Ensure we're in workspace mode
+                        if (!isWorkspace) {
+                          window.location.href = '/home-dashboard';
+                        }
                       }}
                     >
                       <Home className="w-5 h-5 mr-2 -mt-1" />
