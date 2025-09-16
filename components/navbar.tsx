@@ -172,6 +172,16 @@ export function Navbar() {
                         Continue with Dashboard
                       </Link>
                     )}
+                    {isWorkspace && (
+                      <Link 
+                        href="/optimize"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        <Zap className="w-4 h-4" />
+                        Optimize
+                      </Link>
+                    )}
                     <Link 
                       href="/profile"
                       className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"

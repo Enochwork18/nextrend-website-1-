@@ -1,4 +1,10 @@
-import { User } from '@/types';
+export interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  profilePicture?: string;
+}
 
 const USER_KEY = 'user';
 
@@ -25,4 +31,23 @@ export const getCurrentUser = (): User | null => {
   }
 
   return null;
+};
+
+export const updateUser = (updates: Partial<User>): User | null => {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return null;
+  
+  const updatedUser = { ...currentUser, ...updates };
+  
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
+  }
+  
+  return updatedUser;
+};
+
+export const deleteUser = (): void => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(USER_KEY);
+  }
 };
