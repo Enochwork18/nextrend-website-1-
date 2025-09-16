@@ -49,7 +49,8 @@ export function Navbar() {
       p.startsWith("/keywords") ||
       p.startsWith("/ai-trend") ||
       p.startsWith("/optimize") ||
-      p.startsWith("/upgrade")
+      p.startsWith("/upgrade") ||
+      p.startsWith("/profile")
     )
   }
   const isWorkspace = isWorkspaceRoute(pathname)

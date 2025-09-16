@@ -125,12 +125,12 @@ export default function ProfilePage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950">
       <Navbar />
-      <main className="flex-1">
-        <PageHeader
-          title="Profile"
-          description="Manage your account settings"
-          imageUrl="/images/docs-header.jpeg"
-        />
+      <main className="flex-1 pt-16">
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Profile</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">Manage your account settings</p>
+          </div>
         <section className="py-8 bg-white dark:bg-gray-950">
           <div className="container px-4 md:px-6 max-w-3xl mx-auto">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
@@ -238,8 +238,8 @@ export default function ProfilePage() {
             </div>
           </div>
         </section>
+        </div>
       </main>
-      <Footer />
     </div>
   )
 }
