@@ -24,6 +24,7 @@ interface LinkItem {
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [user, setUser] = useState<User | null>(null)
 
   useEffect(() => {
@@ -54,6 +55,26 @@ export function Navbar() {
     )
   }
   const isWorkspace = isWorkspaceRoute(pathname)
+  
+  // Toggle profile dropdown
+  const toggleProfile = () => {
+    setIsProfileOpen(!isProfileOpen)
+  }
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (isProfileOpen && !target.closest('.profile-dropdown')) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isProfileOpen]);
 
   const isActive = (path: string) => {
     return pathname === path
@@ -102,69 +123,122 @@ export function Navbar() {
           {/* Desktop right-side controls */}
           <div className="hidden md:flex items-center space-x-4">
             <ThemeToggle />
-            {user ? (
-              <div className="relative group">
-                <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <UserIcon className="h-4 w-4" />
-                  <ChevronDown className="h-3 w-3 opacity-50" />
+            {!isWorkspace && (
+              <Link href="/donate">
+                <Button variant="outline" className="gap-2">
+                  <Gift className="h-4 w-4" />
+                  Donate
                 </Button>
-                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 focus:outline-none hidden group-hover:block z-50">
-                  <div className="py-1">
-                    <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                      Profile
-                    </Link>
-                    <Link href="/optimize" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                      <div className="flex items-center gap-2">
-                        <Zap className="h-4 w-4" />
-                        Optimize
-                      </div>
+              </Link>
+            )}
+            {user ? (
+              <div className="relative profile-dropdown">
+                <button 
+                  onClick={toggleProfile}
+                  className="flex items-center space-x-2 focus:outline-none"
+                >
+                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                    {user.profilePicture ? (
+                      <img 
+                        src={user.profilePicture} 
+                        alt={user.firstName} 
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-blue-600 dark:text-blue-300 font-medium">
+                        {user.firstName[0]}{user.lastName[0]}
+                      </span>
+                    )}
+                  </div>
+                  <ChevronDown className={`w-4 h-4 text-gray-600 dark:text-gray-300 transition-transform ${isProfileOpen ? 'transform rotate-180' : ''}`} />
+                </button>
+                
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
+                    {isWorkspace ? (
+                      <Link 
+                        href="/" 
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        Back to Home
+                      </Link>
+                    ) : (
+                      <Link 
+                        href="/home-dashboard" 
+                        className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        onClick={() => setIsProfileOpen(false)}
+                      >
+                        Continue with Dashboard
+                      </Link>
+                    )}
+                    <Link 
+                      href="/profile"
+                      className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={() => setIsProfileOpen(false)}
+                    >
+                      Profile Settings
                     </Link>
                     <button
-                      onClick={handleLogout}
-                      className="w-full text-left block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      onClick={() => {
+                        handleLogout();
+                        setIsProfileOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                     >
                       Sign Out
                     </button>
                   </div>
-                </div>
+                )}
               </div>
             ) : (
-              !isWorkspace && (
-                <>
-                  <Link href="/donate">
-                    <Button variant="outline" size="sm" className="rounded-full border-2">
-                      <Gift className="h-4 w-4 mr-2" /> Donate
-                    </Button>
-                  </Link>
-                  <Link href="/auth/login">
-                    <Button variant="outline" size="sm">
-                      Login
-                    </Button>
-                  </Link>
-                  <Link href="/auth/signup">
-                    <Button size="sm">
-                      Get Started
-                    </Button>
-                  </Link>
-                </>
-              )
+              <div className="flex items-center space-x-2">
+                <Link href="/login">
+                  <Button variant="outline">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/donate">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
+                    <Gift className="h-4 w-4" />
+                    Donate
+                  </Button>
+                </Link>
+              </div>
             )}
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <Button
-              variant="ghost"
-              size="sm"
+          <div className="md:hidden flex items-center space-x-2">
+            <div className="md:hidden">
+              <ThemeToggle />
+            </div>
+            {user && (
+              <button
+                onClick={toggleProfile}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
+              >
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                  {user.profilePicture ? (
+                    <img 
+                      src={user.profilePicture} 
+                      alt={user.firstName} 
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-blue-600 dark:text-blue-300 font-medium">
+                      {user.firstName[0]}{user.lastName[0]}
+                    </span>
+                  )}
+                </div>
+              </button>
+            )}
+            <button
               onClick={toggleMenu}
-              className="p-2"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
             >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </Button>
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
         </div>
 
@@ -176,56 +250,57 @@ export function Navbar() {
                 <Link
                   key={l.href}
                   href={l.href}
-                  className={`${isWorkspace ? "text-white hover:text-white/80" : "text-gray-700 hover:text-blue-600"} block px-3 py-2 rounded-md text-base font-medium`}
-                  onClick={toggleMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${isActive(l.href) ? 'text-blue-600 dark:text-white' : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'}`}
+                  onClick={() => setIsOpen(false)}
                 >
                   {l.label}
                 </Link>
               ))}
-              <div className="flex flex-col space-y-2 pt-4">
-                <div className="flex justify-center pb-2">
-                  <ThemeToggle />
-                </div>
-                {user ? (
-                  <div className="w-full space-y-2">
-                    <Link href="/profile" className="w-full block">
-                      <Button variant="outline" size="sm" className="w-full">
-                        <UserIcon className="h-4 w-4 mr-2" />
-                        Profile
-                      </Button>
-                    </Link>
-                    <Link href="/optimize" className="w-full block">
-                      <Button variant="outline" size="sm" className="w-full">
-                        <Zap className="h-4 w-4 mr-2" />
-                        Optimize
-                      </Button>
-                    </Link>
-                    <Button size="sm" className="w-full" onClick={handleLogout}>
-                      Sign Out
-                    </Button>
-                  </div>
-                ) : (
-                  !isWorkspace && (
-                    <>
-                      <Link href="/donate">
-                        <Button variant="outline" size="sm" className="w-full rounded-full border-2">
-                          <Gift className="h-4 w-4 mr-2" /> Donate
-                        </Button>
-                      </Link>
-                      <Link href="/auth/login">
-                        <Button variant="outline" size="sm" className="w-full">
-                          Login
-                        </Button>
-                      </Link>
-                      <Link href="/auth/signup">
-                        <Button size="sm" className="w-full">
-                          Get Started
-                        </Button>
-                      </Link>
-                    </>
-                  )
-                )}
-              </div>
+              {isWorkspace ? (
+                <Link 
+                  href="/" 
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Back to Home
+                </Link>
+              ) : user ? (
+                <Link 
+                  href="/home-dashboard" 
+                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Continue with Dashboard
+                </Link>
+              ) : null}
+              {user ? (
+                <>
+                  <Link 
+                    href="/profile"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    Profile Settings
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setIsOpen(false);
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="block px-3 py-2 rounded-md text-base font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
         )}

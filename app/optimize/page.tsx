@@ -30,8 +30,29 @@ import { TimeRangeButtons } from "@/components/analytics/time-range-buttons";
 import { ViewsLineChart } from "@/components/analytics/views-line-chart";
 import { LongsShortsPieChart } from "@/components/analytics/longs-shorts-pie-chart";
 
-// Analytics data sets backend implementation 
-const dataSets = {
+// TODO: Replace with actual API call to fetch analytics data
+// Example:
+// const [analyticsData, setAnalyticsData] = useState(null);
+// const [loading, setLoading] = useState(true);
+//
+// useEffect(() => {
+//   const fetchAnalytics = async () => {
+//     try {
+//       const response = await fetch('/api/analytics/performance');
+//       const data = await response.json();
+//       setAnalyticsData(data);
+//     } catch (error) {
+//       console.error('Error fetching analytics:', error);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+//   
+//   fetchAnalytics();
+// }, []);
+
+// Mock data - Replace with API response
+export const dataSets = {
   "7D": {
     views: [
       { date: "3", views: 100 },
@@ -108,6 +129,25 @@ interface ChannelData {
   };
 }
 
+// TODO: Replace with actual API call to fetch channel data
+// Example:
+// const [channelData, setChannelData] = useState<ChannelData | null>(null);
+//
+// useEffect(() => {
+//   const fetchChannelData = async () => {
+//     try {
+//       const response = await fetch('/api/channel/data');
+//       const data = await response.json();
+//       setChannelData(data);
+//     } catch (error) {
+//       console.error('Error fetching channel data:', error);
+//     }
+//   };
+//   
+//   fetchChannelData();
+// }, []);
+
+// Mock data - Replace with API response
 const channelData: ChannelData = {
   name: "MrBeast",
   handle: "@mrbeast",
@@ -156,15 +196,65 @@ export default function OptimizePage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("channelytics");
   const [activeVideoTab, setActiveVideoTab] = useState("longs");
-  const [selectedRange, setSelectedRange] = useState<keyof typeof dataSets>("28D");
+  const [selectedRange, setSelectedRange] = useState<keyof typeof dataSets>("7D");
+  // TODO: Add state for loading and error handling when fetching data
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
   const [selectedData, setSelectedData] = useState(dataSets["28D"]);
 
   useEffect(() => {
     setSelectedData(dataSets[selectedRange]);
   }, [selectedRange]);
 
-  const handleTabClick = (tab: string) => {
-    setActiveTab(tab);
+  const handleOptimizeNow = async () => {
+    // TODO: Implement API call to start optimization
+    // try {
+    //   const response = await fetch('/api/optimize/start', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({
+    //       // Add any required parameters
+    //       range: selectedRange,
+    //       // ...other options
+    //     }),
+    //   });
+    //   
+    //   if (!response.ok) {
+    //     throw new Error('Optimization failed');
+    //   }
+    //   
+    //   const result = await response.json();
+    //   // Handle success (e.g., show toast, update UI)
+    //   console.log('Optimization started:', result);
+    // } catch (error) {
+    //   console.error('Error starting optimization:', error);
+    //   // Handle error (e.g., show error message)
+    // }
+    
+    // Temporary implementation
+    console.log('Optimization started');
+  };
+
+  const handleRangeChange = async (range: string) => {
+    // TODO: Implement API call to fetch data for the selected range
+    // try {
+    //   setLoading(true);
+    //   const response = await fetch(`/api/analytics/performance?range=${range}`);
+    //   const data = await response.json();
+    //   // Update state with new data
+    //   setAnalyticsData(data);
+    //   setSelectedRange(range as keyof typeof dataSets);
+    // } catch (err) {
+    //   setError(err.message);
+    //   console.error('Error fetching range data:', err);
+    // } finally {
+    //   setLoading(false);
+    // }
+    
+    // Temporary implementation with mock data
+    setSelectedRange(range as keyof typeof dataSets);
   };
 
   const { views, totalViews, change, longs, shorts } = selectedData;
@@ -257,7 +347,7 @@ export default function OptimizePage() {
               </div>
               <TimeRangeButtons 
                 selectedRange={selectedRange} 
-                onChange={(range) => setSelectedRange(range as keyof typeof dataSets)} 
+                onChange={handleRangeChange} 
               />
             </div>
 
