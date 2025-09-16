@@ -1,14 +1,37 @@
-// Temporary shim to satisfy TS for next/navigation in this project setup.
+// Type definitions for Next.js App Router
 declare module 'next/navigation' {
-  export function useRouter(): {
-    push: (href: string) => void
-    replace?: (href: string) => void
-    prefetch?: (href: string) => Promise<void>
-    back: () => void
+  export interface NextRouter {
+    push(href: string, options?: { scroll?: boolean }): void;
+    replace(href: string, options?: { scroll?: boolean }): void;
+    prefetch(href: string): Promise<void>;
+    back(): void;
+    forward(): void;
+    refresh(): void;
+    pathname: string;
+    query: Record<string, string>;
+    asPath: string;
+    events: {
+      on(event: string, handler: (...args: any[]) => void): void;
+      off(event: string, handler: (...args: any[]) => void): void;
+      emit(event: string, ...args: any[]): void;
+    };
   }
-  // Server navigation helper
-  export function redirect(url: string): never
+
+  export function useRouter(): NextRouter;
+  export function usePathname(): string;
   export function useSearchParams(): URLSearchParams;
+  export function useParams(): Record<string, string | string[]>;
+  export function useSelectedLayoutSegment(parallelRoutesKey?: string): string | null;
+  export function useSelectedLayoutSegments(parallelRoutesKey?: string): string[];
+  export function redirect(path: string): never;
+  export function notFound(): never;
+  export function permanentRedirect(path: string): never;
+  export function useServerInsertedHTML(callback: () => React.ReactNode): void;
+  export function useServerActionResponse(): Readonly<{
+    response: Response | null;
+    setResponse: (response: Response) => void;
+  }>;
+  export function useServerActionRequestContext<T = any>(): T | undefined;
 }
 
 // Minimal JSX shim to avoid "JSX element implicitly has type 'any'" when next-env.d.ts is ignored.

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Menu, X, Gift, Home, Search, Hash, TrendingUp, Zap, ArrowUpRight, User as UserIcon, ChevronDown } from "lucide-react"
 import { useState, useEffect } from "react"
-import { useRouter } from "next/router"
+import { usePathname } from "next/navigation"
 import { getCurrentUser, logout } from "@/lib/auth"
 import * as React from "react"
 
@@ -40,7 +40,7 @@ export function Navbar() {
     window.location.href = "/"
   }
 
-  const router = useRouter()
+  const pathname = usePathname()
   const isWorkspaceRoute = (p?: string | null) => {
     if (!p) return false
     return (
@@ -52,7 +52,11 @@ export function Navbar() {
       p.startsWith("/upgrade")
     )
   }
-  const isWorkspace = isWorkspaceRoute(router.pathname)
+  const isWorkspace = isWorkspaceRoute(pathname)
+
+  const isActive = (path: string) => {
+    return pathname === path
+  }
 
   const workspaceLinks = [
     { href: "/home-dashboard", label: "Home", icon: Home },
