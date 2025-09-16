@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Menu, X, Gift, Home, Search, Hash, TrendingUp, Zap, ArrowUpRight, User as UserIcon, ChevronDown } from "lucide-react"
+import { Menu, X, Gift, Home, Search, Hash, TrendingUp, Zap, ArrowUpRight, User as UserIcon, ChevronDown, LogOut } from "lucide-react"
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import { getCurrentUser, logout } from "@/lib/auth"
@@ -225,8 +225,8 @@ export function Navbar() {
             </div>
             {user && (
               <button
-                onClick={toggleProfile}
-                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                className={`p-2 rounded-full ${isProfileOpen ? 'bg-gray-100 dark:bg-gray-800' : 'hover:bg-gray-100 dark:hover:bg-gray-800'} focus:outline-none`}
               >
                 <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
                   {user.profilePicture ? (
@@ -256,8 +256,8 @@ export function Navbar() {
         {isOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              {/* Main Navigation Links */}
-              {links.map((l) => (
+              {/* Main Navigation Links - Only show when profile is not open */}
+              {!isProfileOpen && links.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
@@ -269,85 +269,74 @@ export function Navbar() {
                 </Link>
               ))}
 
-              {/* Workspace Navigation */}
-              {isWorkspace ? (
-                <>
-                  <Link 
-                    href="/optimize"
-                    className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <Zap className="w-5 h-5 mr-2 -mt-1" />
-                    Optimize
-                  </Link>
-                  <Link 
-                    href="/" 
-                    className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <Home className="w-5 h-5 mr-2 -mt-1" />
-                    Back to Home
-                  </Link>
-                </>
-              ) : user ? (
-                <Link 
-                  href="/home-dashboard" 
-                  className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Home className="w-5 h-5 mr-2 -mt-1" />
-                  Continue with Dashboard
-                </Link>
-              ) : null}
-
-              {/* User Profile Section */}
-              {user ? (
-                <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center px-3 py-2">
-                    <div className="flex-shrink-0">
-                      {user.profilePicture ? (
-                        <img 
-                          className="h-10 w-10 rounded-full" 
-                          src={user.profilePicture} 
-                          alt={`${user.firstName} ${user.lastName}`} 
-                        />
-                      ) : (
-                        <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                          <span className="text-blue-600 dark:text-blue-300 font-medium">
-                            {user.firstName[0]}{user.lastName[0]}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="ml-3">
-                      <div className="text-base font-medium text-gray-800 dark:text-white">
-                        {user.firstName} {user.lastName}
-                      </div>
-                      <div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                        {user.email}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-3 space-y-1">
+              {/* Profile Menu - Shows when profile icon is clicked */}
+              {isProfileOpen && user && (
+                <div className="space-y-1">
+                  {isWorkspace ? (
+                    <>
+                      <Link 
+                        href="/profile"
+                        className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setIsProfileOpen(false);
+                        }}
+                      >
+                        <UserIcon className="w-5 h-5 mr-2 -mt-1" />
+                        Profile Settings
+                      </Link>
+                      <Link 
+                        href="/optimize"
+                        className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setIsProfileOpen(false);
+                        }}
+                      >
+                        <Zap className="w-5 h-5 mr-2 -mt-1" />
+                        Optimize
+                      </Link>
+                      <Link 
+                        href="/" 
+                        className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setIsProfileOpen(false);
+                        }}
+                      >
+                        <Home className="w-5 h-5 mr-2 -mt-1" />
+                        Back to Home
+                      </Link>
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setIsOpen(false);
+                          setIsProfileOpen(false);
+                        }}
+                        className="w-full text-left flex items-center px-3 py-2 rounded-md text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800"
+                      >
+                        <LogOut className="w-5 h-5 mr-2 -mt-1" />
+                        Sign Out
+                      </button>
+                    </>
+                  ) : (
                     <Link 
-                      href="/profile"
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Profile Settings
-                    </Link>
-                    <button
+                      href="/home-dashboard" 
+                      className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                       onClick={() => {
-                        handleLogout();
                         setIsOpen(false);
+                        setIsProfileOpen(false);
                       }}
-                      className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800"
                     >
-                      Sign Out
-                    </button>
-                  </div>
+                      <Home className="w-5 h-5 mr-2 -mt-1" />
+                      Continue with Dashboard
+                    </Link>
+                  )}
                 </div>
-              ) : (
+              )}
+
+              {/* Show auth buttons when not logged in */}
+              {!user && !isProfileOpen && (
                 <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
                   <Link
                     href="/login"
