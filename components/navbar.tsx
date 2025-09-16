@@ -32,7 +32,7 @@ export function Navbar() {
   }, [])
 
   const toggleMenu = () => {
-    setIsOpen(prev => !prev);
+    setIsOpen(!isOpen)
   }
 
   const handleLogout = () => {
@@ -57,15 +57,22 @@ export function Navbar() {
   const isWorkspace = isWorkspaceRoute(pathname)
   
   // Toggle profile dropdown
-  const toggleProfile = () => {
-    setIsProfileOpen(!isProfileOpen)
+  const toggleProfile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsProfileOpen(!isProfileOpen);
   }
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
-      if (isProfileOpen && !target.closest('.profile-dropdown')) {
+      const profileButton = document.querySelector('[data-profile-button]');
+      const profileMenu = document.querySelector('.profile-dropdown');
+      
+      if (isProfileOpen && 
+          !target.closest('.profile-dropdown') && 
+          !profileButton?.contains(target) &&
+          !profileMenu?.contains(target)) {
         setIsProfileOpen(false);
       }
     };
@@ -223,44 +230,67 @@ export function Navbar() {
             <div className="md:hidden">
               <ThemeToggle />
             </div>
-            {!user && (
-              <Link href="/donate" className="md:hidden">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
-                  <Gift className="h-4 w-4" />
-                  Donate
-                </Button>
-              </Link>
-            )}
-            {user && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsProfileOpen(!isProfileOpen);
-                  if (isOpen) setIsOpen(false);
-                }}
-                className={`p-2 rounded-full ${isProfileOpen ? 'bg-gray-100 dark:bg-gray-800' : 'hover:bg-gray-100 dark:hover:bg-gray-800'} focus:outline-none`}
-              >
-                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
-                  {user.profilePicture ? (
-                    <img 
-                      src={user.profilePicture} 
-                      alt={user.firstName} 
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-blue-600 dark:text-blue-300 font-medium">
-                      {user.firstName[0]}{user.lastName[0]}
-                    </span>
-                  )}
-                </div>
-              </button>
-            )}
-            <button
+            <Link 
+              href="/donate" 
+              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleMenu();
-                if (isProfileOpen) setIsProfileOpen(false);
+                setIsOpen(false);
               }}
+            >
+              <Gift className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+            </Link>
+            {user && (
+              <div className="relative">
+                <button
+                  data-profile-button
+                  onClick={toggleProfile}
+                  className={`p-2 rounded-full ${isProfileOpen ? 'bg-gray-100 dark:bg-gray-800' : 'hover:bg-gray-100 dark:hover:bg-gray-800'} focus:outline-none`}
+                >
+                  <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                    {user.profilePicture ? (
+                      <img 
+                        src={user.profilePicture} 
+                        alt={user.firstName} 
+                        className="w-full h-full rounded-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-blue-600 dark:text-blue-300 font-medium">
+                        {user.firstName[0]}{user.lastName[0]}
+                      </span>
+                    )}
+                  </div>
+                </button>
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 z-50 profile-dropdown">
+                    <div className="py-1">
+                      {isWorkspace ? (
+                        <>
+                          <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsProfileOpen(false)}>
+                            Profile Settings
+                          </Link>
+                          <Link href="/optimize" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsProfileOpen(false)}>
+                            Optimize
+                          </Link>
+                          <Link href="/" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsProfileOpen(false)}>
+                            Back to Home
+                          </Link>
+                          <button onClick={handleLogout} className="w-full text-left block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-gray-700">
+                            Sign Out
+                          </button>
+                        </>
+                      ) : (
+                        <Link href="/home-dashboard" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700" onClick={() => setIsProfileOpen(false)}>
+                          Continue with Dashboard
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            <button
+              onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none"
             >
               {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -268,12 +298,11 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - Only show main navigation */}
         {isOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              {/* Main Navigation Links - Only show when profile is not open */}
-              {!isProfileOpen && links.map((l) => (
+              {links.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
@@ -284,79 +313,8 @@ export function Navbar() {
                   {l.label}
                 </Link>
               ))}
-
-              {/* Profile Menu - Shows when profile icon is clicked */}
-              {isProfileOpen && user && (
-                <div className="space-y-1" onClick={(e) => e.stopPropagation()}>
-                  {isWorkspace ? (
-                    <>
-                      <Link 
-                        href="/profile"
-                        className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                        onClick={() => {
-                          setIsOpen(false);
-                          setIsProfileOpen(false);
-                        }}
-                      >
-                        <UserIcon className="w-5 h-5 mr-2 -mt-1" />
-                        Profile Settings
-                      </Link>
-                      <Link 
-                        href="/optimize"
-                        className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                        onClick={() => {
-                          setIsOpen(false);
-                          setIsProfileOpen(false);
-                        }}
-                      >
-                        <Zap className="w-5 h-5 mr-2 -mt-1" />
-                        Optimize
-                      </Link>
-                      <Link 
-                        href="/" 
-                        className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                        onClick={() => {
-                          setIsOpen(false);
-                          setIsProfileOpen(false);
-                        }}
-                      >
-                        <Home className="w-5 h-5 mr-2 -mt-1" />
-                        Back to Home
-                      </Link>
-                      <button
-                        onClick={() => {
-                          handleLogout();
-                          setIsOpen(false);
-                          setIsProfileOpen(false);
-                        }}
-                        className="w-full text-left flex items-center px-3 py-2 rounded-md text-base font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-gray-800"
-                      >
-                        <LogOut className="w-5 h-5 mr-2 -mt-1" />
-                        Sign Out
-                      </button>
-                    </>
-                  ) : (
-                    <Link 
-                      href="/home-dashboard" 
-                      className="flex items-center px-3 py-2 rounded-md text-base font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                      onClick={() => {
-                        setIsOpen(false);
-                        setIsProfileOpen(false);
-                        // Ensure we're in workspace mode
-                        if (!isWorkspace) {
-                          window.location.href = '/home-dashboard';
-                        }
-                      }}
-                    >
-                      <Home className="w-5 h-5 mr-2 -mt-1" />
-                      Continue with Dashboard
-                    </Link>
-                  )}
-                </div>
-              )}
-
-              {/* Show auth buttons when not logged in */}
-              {!user && !isProfileOpen && (
+              
+              {!user && (
                 <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
                   <Link
                     href="/login"
@@ -371,6 +329,14 @@ export function Navbar() {
                     onClick={() => setIsOpen(false)}
                   >
                     Get Started
+                  </Link>
+                  <Link
+                    href="/donate"
+                    className="flex items-center justify-center w-full px-4 py-2 text-center rounded-md border border-yellow-300 dark:border-yellow-600 text-yellow-700 dark:text-yellow-300 font-medium hover:bg-yellow-50 dark:hover:bg-yellow-900/20"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Gift className="w-4 h-4 mr-2" />
+                    Donate
                   </Link>
                 </div>
               )}
