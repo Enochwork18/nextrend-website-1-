@@ -11,10 +11,10 @@ import Link from "next/link"
 type ChatMsg = { role: "user" | "assistant"; content: string }
 
 const MessageBubble = ({ role, content }: { role: "user" | "assistant"; content: string }) => (
-  <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+  <div className={`max-w-[85%] rounded-xl px-3 py-2 text-sm leading-relaxed ${
     role === "user"
-      ? "ml-auto bg-gradient-to-br from-purple-600 to-purple-700 text-white"
-      : "mr-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm"
+      ? "ml-auto bg-[#00CFFF] text-[#0D1B2A] font-medium"
+      : "mr-auto bg-[#1A2A3A] text-[#EAEAEA] border border-[#2A3A4A] shadow-sm"
   }`}>
     {content}
   </div>
@@ -120,15 +120,15 @@ export default function ChatWidget() {
   ]
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 z-50">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <Button
             variant="outline"
             size="icon"
-            className="h-14 w-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 relative group"
+            className="h-12 w-12 rounded-full bg-[#00CFFF] text-[#0D1B2A] hover:bg-[#00B8E6] shadow-md hover:shadow-lg transition-all duration-200 relative group"
           >
-            <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
+            <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
             {!open && !showNudge && (
               <div className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
                 <span>1</span>
@@ -157,32 +157,32 @@ export default function ChatWidget() {
           </div>
         )}
 
-        <SheetContent side="right" className="w-full max-w-md p-0 flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800">
-          <SheetHeader className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
+        <SheetContent side="right" className="w-full max-w-md p-0 flex flex-col bg-[#0D1B2A] border-l border-[#1A2A3A] h-[70vh] max-h-[600px]">
+          <SheetHeader className="px-4 py-3 border-b border-[#1A2A3A] bg-[#0D1B2A] text-[#EAEAEA]">
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
-                  <MessageCircle className="h-5 w-5" />
+              <div className="flex items-center space-x-2">
+                <div className="h-7 w-7 rounded-full bg-[#00CFFF]/20 flex items-center justify-center">
+                  <MessageCircle className="h-4 w-4 text-[#00CFFF]" />
                 </div>
-                <SheetTitle className="text-lg font-semibold">NexTrend Assistant</SheetTitle>
+                <SheetTitle className="text-base font-medium">NexTrend Assistant</SheetTitle>
               </div>
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="text-white/80 hover:bg-white/20 hover:text-white"
+                size="sm" 
+                className="text-[#EAEAEA]/80 hover:bg-[#1A2A3A] hover:text-[#EAEAEA] h-8 w-8 p-0"
                 onClick={() => setOpen(false)}
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </Button>
             </div>
           </SheetHeader>
 
           {/* Quick Actions */}
-          <div className="px-4 pb-3 grid grid-cols-2 gap-2">
+          <div className="px-3 py-2 grid grid-cols-2 gap-2 bg-[#0D1B2A] border-b border-[#1A2A3A]">
             {quickActions.map((qa) => (
               <button
                 key={qa.label}
-                className="justify-start bg-gray-800 border border-gray-700 hover:bg-gray-700 h-9 rounded-md px-3 text-sm flex items-center transition-colors"
+                className="justify-start bg-[#1A2A3A] border border-[#2A3A4A] hover:bg-[#2A3A4A] h-8 rounded text-xs px-2 flex items-center transition-colors text-[#EAEAEA]"
                 onClick={() => {
                   if (qa.intent === "issue") {
                     setShowBugForm(true)
@@ -191,31 +191,31 @@ export default function ChatWidget() {
                   }
                 }}
               >
-                <qa.icon className="h-4 w-4 mr-2" /> {qa.label}
+                <qa.icon className="h-3 w-3 mr-1.5 text-[#00CFFF]" /> {qa.label}
               </button>
             ))}
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 dark:bg-gray-900" ref={scrollRef}>
-            <div className="text-center text-sm text-gray-500 dark:text-gray-400 py-2">
+          <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#0D1B2A]" ref={scrollRef}>
+            <div className="text-center text-xs text-[#7A8A9A] py-1">
               Today
             </div>
             {messages.map((msg, i) => (
               <MessageBubble key={i} role={msg.role} content={msg.content} />
             ))}
             {loading && (
-              <div className="flex items-center justify-start space-x-2 mr-auto">
-                <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="flex items-center justify-start space-x-1.5 mr-auto">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00CFFF] animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00CFFF] animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00CFFF] animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             )}
           </div>
 
           {/* Bug Report Form */}
           {showBugForm && (
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700 mt-4">
+            <div className="bg-[#1A2A3A] rounded-lg p-3 border border-[#2A3A4A] mt-3 mx-3 mb-2">
               <div className="flex justify-between items-center mb-3">
                 <h3 className="font-medium">Report an Issue</h3>
                 <button 
@@ -308,7 +308,7 @@ export default function ChatWidget() {
 
           {/* Input */}
           <form
-            className="flex gap-2 p-4 border-t border-gray-800"
+            className="flex gap-2 p-3 border-t border-[#1A2A3A] bg-[#0D1B2A]"
             onSubmit={(e) => {
               e.preventDefault()
               if (showBugForm) return // disable text send while form is open
@@ -320,12 +320,12 @@ export default function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={showBugForm}
-              className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 flex-1"
+              className="bg-[#1A2A3A] border-[#2A3A4A] text-[#EAEAEA] placeholder:text-[#5A6A7A] text-sm h-9 flex-1 focus-visible:ring-1 focus-visible:ring-[#00CFFF]"
             />
             <Button 
               type="submit" 
               disabled={loading || !input.trim() || showBugForm} 
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-[#00CFFF] text-[#0D1B2A] hover:bg-[#00B8E6] h-9 w-9 p-0"
               size="icon"
             >
               <Send className="h-4 w-4" />
