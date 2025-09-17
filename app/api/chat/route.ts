@@ -49,38 +49,95 @@ async function callGemini(systemPrompt: string, userText: string) {
 export async function POST(req: NextRequest) {
   const { message, intent: hinted } = await req.json()
   const text: string = String(message ?? "").slice(0, 4000)
-  const intent = detectIntent(text, hinted)
+  // Enhance intent detection with more patterns
+  const enhancedText = `${hinted || ''} ${text}`.toLowerCase()
+  let intent = detectIntent(enhancedText, hinted)
+  
+  // Enhance detection with more patterns
+  if (enhancedText.includes('how to') || 
+      enhancedText.includes('how do i') || 
+      enhancedText.includes('tutorial')) {
+    intent = 'guide'
+  } else if (enhancedText.match(/price|plan|pricing|subscribe|upgrade|downgrade/)) {
+    intent = 'pricing'
+  } else if (enhancedText.match(/feature|functionality|tool|capabilit/)) {
+    intent = 'feature'
+  } else if (enhancedText.match(/new|start|begin|onboard/)) {
+    intent = 'onboarding'
+  }
 
   const CONTACT_PAGE = "/contact"
   const CONTACT_EMAIL = process.env.CONTACT_EMAIL || ""
 
   // Lightweight site map to help the assistant link users directly.
   const siteMap = [
-    { label: "Home Dashboard", path: "/home-dashboard" },
-    { label: "Discover", path: "/discover" },
-    { label: "Keywords", path: "/keywords" },
-    { label: "AI Trend", path: "/ai-trend" },
-    { label: "Upgrade", path: "/upgrade" },
-    { label: "Donate", path: "/donate" },
-    { label: "Login", path: "/auth/login" },
-    { label: "Sign Up", path: "/auth/signup" },
-    { label: "About", path: "/about" },
-    { label: "Docs", path: "/docs" },
-    { label: "Contact", path: CONTACT_PAGE },
+    { label: "Home Dashboard", path: "/home-dashboard", description: "Your personalized dashboard with analytics and quick actions" },
+    { label: "Discover", path: "/discover", description: "Find trending content and topics in your industry" },
+    { label: "Keywords", path: "/keywords", description: "Research and analyze keywords for better content strategy" },
+    { label: "AI Trend", path: "/ai-trend", description: "Get AI-powered insights on current and emerging trends" },
+    { label: "Optimize", path: "/optimize", description: "Tools to optimize your content and online presence" },
+    { label: "Upgrade", path: "/upgrade", description: "View and upgrade your subscription plan" },
+    { label: "Profile", path: "/profile", description: "Manage your account settings and preferences" },
+    { label: "Donate", path: "/donate", description: "Support our platform and help us improve" },
+    { label: "Login", path: "/auth/login", description: "Sign in to your NexTrend account" },
+    { label: "Sign Up", path: "/auth/signup", description: "Create a new NexTrend account" },
+    { label: "About", path: "/about", description: "Learn more about NexTrend and our mission" },
+    { label: "Documentation", path: "/docs", description: "Detailed guides and API documentation" },
+    { label: "Contact Support", path: CONTACT_PAGE, description: "Get help from our support team" },
   ]
 
-  const system = `You are the NexTrend website assistant. Answer ONLY questions about the NexTrend website and its features. If a request is outside NexTrend scope (personal, unrelated topics, general chit-chat, other products), reply with: \"I can only help with NexTrend topics.\" Do NOT invent data, links, or promises. Use ONLY these routes.\n\nCapabilities:\n- Collect feedback & report issues.\n- If the issue sounds severe/urgent, provide the owner's contact link: ${CONTACT_PAGE}${CONTACT_EMAIL ? ` and email: ${CONTACT_EMAIL}` : ""}.\n- Guide users step-by-step on using features.\n- Answer FAQs with short actionable steps.\n- If the user looks like a potential lead, ask for name, email, and what they're interested in.\n- When the user asks for a page, always include a direct link using one of these routes: ${siteMap
-    .map((s) => `${s.label}: ${s.path}`)
-    .join(", ")}.\n\nAlways keep answers under 120 words and use bullet points when helpful. Prefer direct links (just provide the path).`
+  // Comprehensive knowledge about NexTrend
+  const nexTrendKnowledge = `
+  NexTrend is an AI-powered platform that helps users discover trending content, analyze keywords, and optimize their online presence. Here are the key features and pages:
+
+  1. Home Dashboard (/home-dashboard) - Overview of your analytics and performance
+  2. Discover (/discover) - Find trending topics and content in your niche
+  3. Keywords (/keywords) - Research and analyze keywords for better SEO
+  4. AI Trend (/ai-trend) - Get AI-generated insights on current trends
+  5. Optimize (/optimize) - Tools to optimize your content and online presence
+  6. Profile (/profile) - Manage your account and settings
+  7. Upgrade (/upgrade) - View and manage your subscription plans
+  8. Donate (/donate) - Support our platform
+
+  Common tasks users can perform:
+  - Track content performance
+  - Find trending topics
+  - Get content recommendations
+  - Analyze competitors
+  - Generate SEO-optimized content
+  - Monitor social media trends
+  - Get AI-powered insights
+  `
+
+  const system = `You are the NexTrend AI assistant. Your purpose is to help users navigate and get the most out of the NexTrend platform. Follow these guidelines:
+
+  1. Answer questions about NexTrend's features, pricing, and how to use the platform
+  2. Be concise and helpful - keep responses under 150 words unless more detail is needed
+  3. Use markdown formatting for better readability (bold, lists, links)
+  4. If you don't know something, say so and direct them to contact support
+  5. For account-specific issues, guide them to the appropriate settings page
+  6. If they're asking about features, explain how to access and use them
+  7. For technical issues, gather necessary details before suggesting solutions
+  8. Always be polite, professional, and enthusiastic about helping
+
+  Here's what you know about NexTrend:
+  ${nexTrendKnowledge}
+
+  Available pages (always include the full URL when referring to them):
+  ${siteMap.map(s => `- ${s.label}: ${s.path}`).join('\n')}
+  `
 
   // Pre-bias the prompt a bit based on intent
   const prefaceMap: Record<string, string> = {
-    feedback: "User wants to share product feedback.",
-    issue: "User reports a bug/problem. Ask for steps, expected vs actual, device/browser.",
-    contact: "User wants to reach the owner fast. Provide contact link immediately.",
-    guide: "User needs a how-to guide for NexTrend features.",
-    faq: "User has a general question.",
-    lead: "User might be a lead. Politely ask name, email, and needs.",
+    feedback: "The user wants to provide feedback about NexTrend. Be appreciative and ask for details about their experience.",
+    issue: "The user is reporting an issue. Ask for specific details like what they were doing, what happened, and what they expected to happen. Also ask about their device/browser and any error messages.",
+    contact: "The user wants to contact support. Provide the contact information and let them know what to expect in terms of response time.",
+    guide: "The user needs guidance on using NexTrend. Provide clear, step-by-step instructions. If relevant, mention specific features they should use.",
+    faq: "The user has a general question about NexTrend. Provide a concise, helpful answer. If the question is about features, explain how to access and use them.",
+    lead: "The user might be interested in becoming a customer. Ask qualifying questions to understand their needs and direct them to the most relevant features or pricing page.",
+    feature: "The user is asking about specific features. Explain what the feature does, how to use it, and its benefits. Provide examples if helpful.",
+    pricing: "The user has questions about pricing. Be transparent about the different plans and what's included in each. If they're on a free plan, mention the benefits of upgrading.",
+    onboarding: "The user is new to NexTrend. Provide a warm welcome and guide them through the first steps to get started.",
   }
 
   const preface = prefaceMap[intent] || prefaceMap.faq

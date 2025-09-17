@@ -13,8 +13,8 @@ type ChatMsg = { role: "user" | "assistant"; content: string }
 const MessageBubble = ({ role, content }: { role: "user" | "assistant"; content: string }) => (
   <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
     role === "user"
-      ? "ml-auto bg-gradient-to-br from-blue-500 to-blue-600 text-white"
-      : "mr-auto bg-white/5 backdrop-blur-sm border border-white/10"
+      ? "ml-auto bg-gradient-to-br from-purple-600 to-purple-700 text-white"
+      : "mr-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm"
   }`}>
     {content}
   </div>
@@ -24,7 +24,10 @@ export default function ChatWidget() {
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState("")
   const [messages, setMessages] = useState<ChatMsg[]>([
-    { role: "assistant", content: "Hello! I'm your NexTrend assistant. I can help you with any questions about our platform, features, or content. What would you like to know?" },
+    { 
+      role: "assistant", 
+      content: "Hello! I'm your NexTrend assistant. I can help you with any questions about our platform, features, or content. What would you like to know?" 
+    },
   ])
   const [loading, setLoading] = useState(false)
   const [showBugForm, setShowBugForm] = useState(false)
@@ -120,16 +123,20 @@ export default function ChatWidget() {
     <div className="fixed bottom-6 right-6 z-50">
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
-          <button
-            aria-label="Chat with us"
-            className="group relative h-14 w-14 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center hover:scale-105 active:scale-95"
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-14 w-14 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 text-white hover:from-purple-700 hover:to-blue-700 shadow-lg hover:shadow-xl transition-all duration-200 relative group"
           >
-            <MessageCircle className="h-6 w-6 text-white" />
-            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 border-2 border-white/90 flex items-center justify-center">
-              <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse"></span>
-            </span>
-          </button>
+            <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" />
+            {!open && !showNudge && (
+              <div className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
+                <span>1</span>
+              </div>
+            )}
+          </Button>
         </SheetTrigger>
+
         {showNudge && !open && (
           <div className="absolute bottom-16 right-0 w-64 bg-white/90 backdrop-blur-lg rounded-xl p-3 shadow-xl border border-gray-200 animate-fade-in">
             <div className="flex items-start gap-2">
@@ -150,20 +157,23 @@ export default function ChatWidget() {
           </div>
         )}
 
-        <SheetContent side="right" className="p-0 bg-gray-900 text-white border-l border-gray-800 w-[320px] sm:w-[360px] h-[60vh] sm:h-[70vh] top-auto bottom-6 rounded-l-xl shadow-xl flex flex-col">
-          <SheetHeader className="border-b border-white/10 pb-3">
+        <SheetContent side="right" className="w-full max-w-md p-0 flex flex-col bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800">
+          <SheetHeader className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
             <div className="flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="icon"
+              <div className="flex items-center space-x-3">
+                <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+                  <MessageCircle className="h-5 w-5" />
+                </div>
+                <SheetTitle className="text-lg font-semibold">NexTrend Assistant</SheetTitle>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-white/80 hover:bg-white/20 hover:text-white"
                 onClick={() => setOpen(false)}
-                className="h-8 w-8 rounded-full text-white/70 hover:bg-white/10 hover:text-white mr-2"
               >
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
+                <X className="h-5 w-5" />
               </Button>
-              <SheetTitle className="text-lg font-semibold flex-1 text-center">NexTrend Assistant</SheetTitle>
-              <div className="w-8"></div> {/* Spacer for alignment */}
             </div>
           </SheetHeader>
 
@@ -187,99 +197,111 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="px-4 space-y-3 flex-1 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 dark:bg-gray-900" ref={scrollRef}>
+            <div className="text-center text-sm text-gray-500 dark:text-gray-400 py-2">
+              Today
+            </div>
             {messages.map((msg, i) => (
               <MessageBubble key={i} role={msg.role} content={msg.content} />
             ))}
             {loading && (
-              <div className="flex items-center justify-start">
-                <div className="flex space-x-1 items-center bg-white/5 px-4 py-2 rounded-2xl">
-                  <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                  <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                  <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: '300ms' }}></div>
-                </div>
+              <div className="flex items-center justify-start space-x-2 mr-auto">
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-2 h-2 rounded-full bg-purple-500 animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
             )}
+          </div>
 
-            {/* Bug Report Form */}
-            {showBugForm && (
-              <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700 mt-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h3 className="font-medium">Report an Issue</h3>
-                  <button 
-                    onClick={() => setShowBugForm(false)}
-                    className="text-gray-400 hover:text-white"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                </div>
-                <div className="space-y-3">
-                  <Input
-                    placeholder="Your name"
-                    value={bugName}
-                    onChange={(e) => setBugName(e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white"
-                  />
-                  <Input
-                    placeholder="Email address"
-                    type="email"
-                    value={bugEmail}
-                    onChange={(e) => setBugEmail(e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white"
-                  />
-                  <Textarea
-                    placeholder="Describe the issue..."
-                    rows={3}
-                    value={bugDesc}
-                    onChange={(e) => setBugDesc(e.target.value)}
-                    className="bg-gray-700 border-gray-600 text-white"
-                  />
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm text-gray-300 flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={isUrgent}
-                        onChange={(e) => setIsUrgent(e.target.checked)}
-                        className="h-4 w-4 text-blue-500 rounded border-gray-600 bg-gray-700 mr-2"
-                      />
-                      Urgent issue
-                    </label>
-                    <Button
-                      onClick={async () => {
-                        if (!bugName.trim() || !bugEmail.trim() || !bugDesc.trim()) return;
+          {/* Bug Report Form */}
+          {showBugForm && (
+            <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-4 border border-gray-700 mt-4">
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="font-medium">Report an Issue</h3>
+                <button 
+                  onClick={() => setShowBugForm(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+              <div className="space-y-3">
+                <Input
+                  placeholder="Your name"
+                  value={bugName}
+                  onChange={(e) => setBugName(e.target.value)}
+                  className="bg-gray-700 border-gray-600 text-white"
+                />
+                <Input
+                  placeholder="Email address"
+                  type="email"
+                  value={bugEmail}
+                  onChange={(e) => setBugEmail(e.target.value)}
+                  className="bg-gray-700 border-gray-600 text-white"
+                />
+                <Textarea
+                  placeholder="Describe the issue..."
+                  rows={3}
+                  value={bugDesc}
+                  onChange={(e) => setBugDesc(e.target.value)}
+                  className="bg-gray-700 border-gray-600 text-white"
+                />
+                <div className="flex items-center justify-between">
+                  <label className="text-sm text-gray-300 flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={isUrgent}
+                      onChange={(e) => setIsUrgent(e.target.checked)}
+                      className="h-4 w-4 text-purple-500 rounded border-gray-600 bg-gray-700 mr-2"
+                    />
+                    Urgent issue
+                  </label>
+                  <Button
+                    onClick={async () => {
+                      if (!bugName.trim() || !bugEmail.trim() || !bugDesc.trim()) return;
+                      
+                      try {
+                        const res = await fetch("/api/feedback", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ 
+                            name: bugName, 
+                            email: bugEmail, 
+                            description: bugDesc, 
+                            type: "issue", 
+                            severity: isUrgent ? "urgent" : "normal" 
+                          }),
+                        });
                         
-                        try {
-                          const res = await fetch("/api/feedback", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ 
-                              name: bugName, 
-                              email: bugEmail, 
-                              description: bugDesc, 
-                              type: "issue", 
-                              severity: isUrgent ? "urgent" : "normal" 
-                            }),
-                          });
-                          
-                          const data = await res.json();
-                          setShowBugForm(false);
-                          setBugName("");
-                          setBugEmail("");
-                          setBugDesc("");
-                          setIsUrgent(false);
-                          
-                          setMessages(m => [
-                            ...m, 
-                            { 
-                              role: "assistant", 
-                              content: data?.ok 
-                                ? "Thank you for reporting the issue! We'll look into it and get back to you soon."
-                                : "We received your report but encountered an issue. Please try again later."
-                            }
-                          ]);
-                        } catch (e) {
-                          setMessages(m => [
-                            ...m,
+                        const data = await res.json();
+                        setShowBugForm(false);
+                        setBugName("");
+                        setBugEmail("");
+                        setBugDesc("");
+                        setIsUrgent(false);
+                        
+                        setMessages(m => [
+                          ...m, 
+                          { 
+                            role: "assistant", 
+                            content: data?.ok 
+                              ? "Thank you for reporting the issue! We'll look into it and get back to you soon."
+                              : "We received your report but encountered an issue. Please try again later."
+                          }
+                        ]);
+                      } catch (e) {
+                        setMessages(m => [
+                          ...m,
+                          { role: "assistant", content: "Couldn't submit the report right now. Please try again." },
+                        ]);
+                      }
+                    }}
+                    disabled={!bugName.trim() || !bugEmail.trim() || !bugDesc.trim()}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    Submit Report
+                  </Button>
+                </div>
                             { role: "assistant", content: "Couldn't submit the report right now. Please try again." },
                           ]);
                         }
