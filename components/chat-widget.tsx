@@ -302,20 +302,9 @@ export default function ChatWidget() {
                     Submit Report
                   </Button>
                 </div>
-                            { role: "assistant", content: "Couldn't submit the report right now. Please try again." },
-                          ]);
-                        }
-                      }}
-                      disabled={!bugName.trim() || !bugEmail.trim() || !bugDesc.trim()}
-                      className="bg-blue-600 hover:bg-blue-700"
-                    >
-                      Submit Report
-                    </Button>
-                  </div>
-                </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Input */}
           <form
