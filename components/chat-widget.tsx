@@ -139,7 +139,7 @@ export default function ChatWidget() {
           </SheetTrigger>
 
 
-        <SheetContent side="bottom" className="w-[calc(100vw-2rem)] sm:w-[400px] p-0 flex flex-col bg-[#0D1B2A] border border-[#1A2A3A] h-[60vh] max-h-[600px] rounded-t-xl">
+        <SheetContent side="bottom" className="w-[calc(100vw-2rem)] sm:w-[400px] p-0 flex flex-col bg-[#0D1B2A] border border-[#1A2A3A] h-[60vh] max-h-[600px] rounded-t-xl right-4 sm:right-6">
           <SheetHeader className="px-4 py-3 border-b border-[#1A2A3A] bg-[#0D1B2A] text-[#EAEAEA]">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
