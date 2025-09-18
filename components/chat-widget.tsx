@@ -121,43 +121,25 @@ export default function ChatWidget() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-12 w-12 rounded-full bg-[#00CFFF] text-[#0D1B2A] hover:bg-[#00B8E6] shadow-md hover:shadow-lg transition-all duration-200 relative group"
-          >
-            <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
-            {!open && !showNudge && (
-              <div className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
-                <span>1</span>
-              </div>
-            )}
-          </Button>
-        </SheetTrigger>
+      <div className="relative">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-12 w-12 rounded-full bg-[#00CFFF] text-[#0D1B2A] hover:bg-[#00B8E6] shadow-md hover:shadow-lg transition-all duration-200 relative group"
+            >
+              <MessageCircle className="h-5 w-5 group-hover:scale-110 transition-transform" />
+              {!open && !showNudge && (
+                <div className="absolute -top-1 -right-1 h-5 w-5 bg-red-500 rounded-full flex items-center justify-center text-xs font-bold animate-pulse">
+                  <span>1</span>
+                </div>
+              )}
+            </Button>
+          </SheetTrigger>
 
-        {showNudge && !open && (
-          <div className="absolute bottom-16 right-0 w-64 bg-white/90 backdrop-blur-lg rounded-xl p-3 shadow-xl border border-gray-200 animate-fade-in">
-            <div className="flex items-start gap-2">
-              <div className="bg-blue-100 p-1.5 rounded-lg">
-                <MessageCircle className="h-4 w-4 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm font-medium text-gray-900">Need help?</p>
-                <p className="text-xs text-gray-600 mt-0.5">We're here to assist you!</p>
-              </div>
-              <button 
-                onClick={() => setShowNudge(false)}
-                className="ml-auto text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
-        )}
 
-        <SheetContent side="right" className="w-full max-w-md p-0 flex flex-col bg-[#0D1B2A] border-l border-[#1A2A3A] h-[70vh] max-h-[600px]">
+        <SheetContent side="bottom" className="w-[calc(100vw-2rem)] sm:w-[400px] p-0 flex flex-col bg-[#0D1B2A] border border-[#1A2A3A] h-[60vh] max-h-[600px] rounded-t-xl">
           <SheetHeader className="px-4 py-3 border-b border-[#1A2A3A] bg-[#0D1B2A] text-[#EAEAEA]">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
@@ -333,6 +315,27 @@ export default function ChatWidget() {
           </form>
         </SheetContent>
       </Sheet>
+      
+      {showNudge && !open && (
+        <div className="absolute bottom-16 right-0 w-64 bg-white/90 backdrop-blur-lg rounded-xl p-3 shadow-xl border border-gray-200 animate-fade-in">
+          <div className="flex items-start gap-2">
+            <div className="bg-blue-100 p-1.5 rounded-lg">
+              <MessageCircle className="h-4 w-4 text-blue-600" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-900">Need help?</p>
+              <p className="text-xs text-gray-600 mt-0.5">We're here to assist you!</p>
+            </div>
+            <button 
+              onClick={() => setShowNudge(false)}
+              className="ml-auto text-gray-400 hover:text-gray-600"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
+      </div>
     </div>
   )
 }
