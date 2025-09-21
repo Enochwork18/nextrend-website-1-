@@ -215,10 +215,9 @@ export function Navbar() {
                     Sign In
                   </Button>
                 </Link>
-                <Link href="/donate">
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
-                    <Gift className="h-4 w-4" />
-                    Donate
+                <Link href="/auth/signup">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                    Get Started
                   </Button>
                 </Link>
               </div>
